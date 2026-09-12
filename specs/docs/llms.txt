@@ -120,8 +120,8 @@
 - [Using Windsurf with Unkey](https://unkey.com/docs/ai-code-gen/windsurf.md): Set up Windsurf with Unkey documentation context to generate accurate API key verification, rate limiting, and authentication code in your apps.
 - [Unkey MCP (Model Context Protocol)](https://unkey.com/docs/ai-code-gen/unkey-mcp.md): Use the Unkey MCP server to connect AI coding assistants to Unkey APIs. Manage API keys, rate limits, and permissions directly from your IDE.
 - [Overview](https://unkey.com/docs/audit-log/introduction.md): Track every change to your API keys, permissions, and workspace configuration with Unkey audit logs. Filter by actor, event type, and time.
-- [Log drains](https://unkey.com/docs/audit-log/log-drains.md): Stream workspace audit logs to external destinations, configure delivery, and diagnose failed requests.
 - [Event Types](https://unkey.com/docs/audit-log/types.md): Complete reference of all audit log event types in Unkey including key creation, deletion, verification, permission changes, and more.
+- [Log drains](https://unkey.com/docs/log-drains/overview.md): Send audit logs, key verifications, gateway requests, runtime logs, and rate-limit decisions to HTTPS endpoints or Axiom.
 - [CLI](https://unkey.com/docs/cli/overview.md): Install and use the Unkey CLI to manage API keys, rate limits, permissions, and identities from your terminal. Supports all core operations.
 - [CLI authentication](https://unkey.com/docs/cli/authentication.md): Store your root key locally so the Unkey CLI authenticates automatically. Configure credentials once and run commands without manual tokens.
 - [login](https://unkey.com/docs/cli/auth/login.md): Authenticate the Unkey CLI by storing your root key in a local configuration file. Run this command once to enable all CLI operations.
