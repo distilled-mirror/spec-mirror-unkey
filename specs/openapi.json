@@ -3440,11 +3440,12 @@
               "type": "string",
               "enum": [
                 "keys:read",
-                "keys:reroll"
+                "keys:reroll",
+                "analytics:read"
               ]
             },
             "minItems": 1,
-            "description": "The capabilities granted to the end user in the Portal, from a fixed\nvocabulary. All capabilities are scoped to this end user: key capabilities\n(`keys:*`) apply only to keys the end user owns within the keyspace\nconfigured on the portal. An end user can never see another identity's\nkeys.\n\nThe portal currently exposes only the keys page, so these scopes gate\nwhat the end user can do there rather than which pages they see. Because\nrerolling is reached from that page, `keys:reroll` requires `keys:read`\nin the same session; requesting it alone is rejected.\n\nEach scope requires the equivalent permission on your own root key. See\nRequired Permissions on this operation.\n",
+            "description": "The capabilities granted to the end user in the Portal, from a fixed\nvocabulary. All capabilities are scoped to this end user: key capabilities\n(`keys:*`) apply only to keys the end user owns within the keyspace\nconfigured on the portal. An end user can never see another identity's\nkeys.\n\nRerolling and usage analytics are both reached from the keys page, so\n`keys:reroll` and `analytics:read` each require `keys:read` in the same\nsession; requesting either without it is rejected.\n\nEach scope requires the equivalent permission on your own root key. See\nRequired Permissions on this operation.\n",
             "example": [
               "keys:read",
               "keys:reroll"
@@ -3621,17 +3622,24 @@
         "type": "object",
         "required": [
           "meta",
-          "data"
+          "bucketMillis",
+          "keys"
         ],
         "properties": {
           "meta": {
             "$ref": "#/components/schemas/Meta"
           },
-          "data": {
+          "bucketMillis": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Width of one bucket in milliseconds, chosen from the window size. Every\nseries below is aligned to it, so a client can build the buckets for a\nwindow that returned no keys at all without restating the granularity\nrule.\n",
+            "example": 60000
+          },
+          "keys": {
             "type": "array",
-            "description": "Zero-filled verification timeseries for the authenticated end user, ordered\nby time ascending. Buckets with no verifications are present with zero\ncounts so the series is contiguous across the requested window.\n",
+            "description": "One entry per key the end user has verifications for in the window, each\nzero-filled across the whole window and ordered by time ascending. Sum\nthem to get the account-wide series.\n\nKeys with no verifications anywhere in the window are omitted. Entries\ncome from the verification events themselves, so a `keyId` may name a key\nthat has since been deleted and will not appear in `portal.listKeys`;\nrender those totals without assuming the key is still listable.\n",
             "items": {
-              "$ref": "#/components/schemas/V2PortalGetVerificationsDataPoint"
+              "$ref": "#/components/schemas/V2PortalGetVerificationsKeySeries"
             }
           }
         },
@@ -7580,6 +7588,28 @@
             "example": "#6366f1",
             "x-go-type-skip-optional-pointer": true,
             "x-go-type-skip-optional-pointer-with-omitzero": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "V2PortalGetVerificationsKeySeries": {
+        "type": "object",
+        "required": [
+          "keyId",
+          "data"
+        ],
+        "properties": {
+          "keyId": {
+            "type": "string",
+            "description": "The key these buckets belong to.",
+            "example": "key_1234abcd"
+          },
+          "data": {
+            "type": "array",
+            "description": "Verification timeseries for this key, zero-filled across the requested\nwindow and ordered by time ascending.\n",
+            "items": {
+              "$ref": "#/components/schemas/V2PortalGetVerificationsDataPoint"
+            }
           }
         },
         "additionalProperties": false
@@ -17366,7 +17396,7 @@
     },
     "/v2/portal.createSession": {
       "post": {
-        "description": "Create a portal session for an end user and get the URL to redirect them to.\n\nThe URL carries a single-use exchange code valid for 15 minutes, which the portal\nredeems exactly once for a 24-hour access token via `portal.exchangeCode`.\n\n**Required Permissions**\n\nAuthorization runs in two stages, and both must pass.\n\nFirst, your root key must have one of the following permissions:\n- `portal.*.create_portal_session` (to mint sessions for any portal in the workspace)\n- `portal.<portal_id>.create_portal_session` (to mint sessions for a specific portal)\n\nSecond, a session can never carry a capability your root key does not itself\nhold. Each requested scope additionally requires the equivalent permission on\nevery keyspace the portal resolves to:\n- `keys:read` requires `api.<api_id>.read_key` **and** `api.<api_id>.read_api`\n- `keys:reroll` requires `api.<api_id>.create_key`, plus\n  `api.<api_id>.encrypt_key` when the keyspace stores encrypted keys\n\nThe `*` form of each is also accepted. Requesting a scope you do not hold\nreturns 403 for the whole request rather than minting a reduced session, so a\nmissing grant is visible instead of surfacing later as a broken portal.\n\nMissing the portal permission itself returns **404**, not 403: a caller who\ncannot mint for a portal is not told whether it exists.\n\nYour root key must also be associated with a workspace that has an enabled portal.\n",
+        "description": "Create a portal session for an end user and get the URL to redirect them to.\n\nThe URL carries a single-use exchange code valid for 15 minutes, which the portal\nredeems exactly once for a 24-hour access token via `portal.exchangeCode`.\n\n**Required Permissions**\n\nAuthorization runs in two stages, and both must pass.\n\nFirst, your root key must have one of the following permissions:\n- `portal.*.create_portal_session` (to mint sessions for any portal in the workspace)\n- `portal.<portal_id>.create_portal_session` (to mint sessions for a specific portal)\n\nSecond, a session can never carry a capability your root key does not itself\nhold. Each requested scope additionally requires the equivalent permission on\nevery keyspace the portal resolves to:\n- `keys:read` requires `api.<api_id>.read_key` **and** `api.<api_id>.read_api`\n- `keys:reroll` requires `api.<api_id>.create_key`, plus\n  `api.<api_id>.encrypt_key` when the keyspace stores encrypted keys\n- `analytics:read` requires `api.<api_id>.read_analytics`\n\nThe `*` form of each is also accepted. Requesting a scope you do not hold\nreturns 403 for the whole request rather than minting a reduced session, so a\nmissing grant is visible instead of surfacing later as a broken portal.\n\nMissing the portal permission itself returns **404**, not 403: a caller who\ncannot mint for a portal is not told whether it exists.\n\nYour root key must also be associated with a workspace that has an enabled portal.\n",
         "operationId": "portal.createSession",
         "requestBody": {
           "content": {
@@ -17754,7 +17784,7 @@
     },
     "/v2/portal.getVerifications": {
       "post": {
-        "description": "Return a verification analytics timeseries for the authenticated portal\nsession's end user.\n\nAuthenticates only with a portal session cookie and always restricts results\nto verification events attributed to the session's external identity. Unlike\n`analytics.getVerifications`, this endpoint takes a fixed time window (no\nquery language) and returns a zero-filled, outcome-broken-out timeseries.\nBucket granularity is chosen automatically from the window size.\n",
+        "description": "Return a verification analytics timeseries for the authenticated portal\nsession's end user.\n\nAuthenticates only with a portal session cookie and always restricts results\nto verification events attributed to the session's external identity. Unlike\n`analytics.getVerifications`, this endpoint takes a fixed time window (no\nquery language) and returns outcome-broken-out counts. Bucket granularity is\nchosen automatically from the window size.\n\nThe response carries one zero-filled series per key the end user has\nverifications for, so a client can render both a per-key table and an\naccount-wide chart from one call by summing them. Pass `keyId` to narrow the\nwindow to a single key.\n",
         "operationId": "portal.getVerifications",
         "requestBody": {
           "content": {
@@ -17816,6 +17846,16 @@
               }
             },
             "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnprocessableEntityErrorResponse"
+                }
+              }
+            },
+            "description": "Query exceeds the maximum response size"
           },
           "429": {
             "content": {
