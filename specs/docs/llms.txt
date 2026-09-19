@@ -145,7 +145,7 @@
 - [remove-environment-variables](https://unkey.com/docs/cli/environments/remove-environment-variables.md): Remove environment variables with the Unkey API CLI
 - [set-environment-variables](https://unkey.com/docs/cli/environments/set-environment-variables.md): Set environment variables with the Unkey API CLI
 - [update-settings](https://unkey.com/docs/cli/environments/update-settings.md): Update settings with the Unkey API CLI
-- [create-deployment](https://unkey.com/docs/cli/deployments/create-deployment.md): Create deployment with the Unkey API CLI
+- [create-deployment](https://unkey.com/docs/cli/deployments/create-deployment.md): Create a deployment for an app in a project
 - [get-deployment](https://unkey.com/docs/cli/deployments/get-deployment.md): Get deployment with the Unkey API CLI
 - [list-deployments](https://unkey.com/docs/cli/deployments/list-deployments.md): List deployments with the Unkey API CLI
 - [promote-deployment](https://unkey.com/docs/cli/deployments/promote-deployment.md): Promote deployment with the Unkey API CLI
@@ -155,13 +155,17 @@
 - [create-domain](https://unkey.com/docs/cli/domains/create-domain.md): Attach a custom domain to an environment and start verifying it
 - [delete-domain](https://unkey.com/docs/cli/domains/delete-domain.md): Delete a custom domain from your workspace
 - [get-domain](https://unkey.com/docs/cli/domains/get-domain.md): Retrieve a custom domain and its verification status
-- [list-domains](https://unkey.com/docs/cli/domains/list-domains.md): List custom domains attached to an environment
+- [list-domains](https://unkey.com/docs/cli/domains/list-domains.md): List custom domains across your workspace
 - [verify-domain](https://unkey.com/docs/cli/domains/verify-domain.md): Restart verification for a custom domain
 - [list-policies](https://unkey.com/docs/cli/gateway/list-policies.md): Retrieve gateway policies in evaluation order
 - [set-policies](https://unkey.com/docs/cli/gateway/set-policies.md): Atomically replace an environment's gateway policies
 - [update-policy](https://unkey.com/docs/cli/gateway/update-policy.md): Update one gateway policy in place
 - [install-app](https://unkey.com/docs/cli/github/install-app.md): Start installing the Unkey GitHub App for your workspace
+- [create-portal](https://unkey.com/docs/cli/portal/create-portal.md): Create a portal for one app or keyspace in your workspace
 - [create-session](https://unkey.com/docs/cli/portal/create-session.md): Create a short-lived Customer Portal session
+- [delete-portal](https://unkey.com/docs/cli/portal/delete-portal.md): Delete a portal and revoke the sessions it minted
+- [get-portal](https://unkey.com/docs/cli/portal/get-portal.md): Read one portal by its ID, slug, or served resource
+- [update-portal](https://unkey.com/docs/cli/portal/update-portal.md): Change a portal's configuration and branding
 - [create-key](https://unkey.com/docs/cli/keys/create-key.md): Create a new API key using the Unkey CLI with options for expiration, metadata, rate limits, roles, and permissions in a single command.
 - [delete-key](https://unkey.com/docs/cli/keys/delete-key.md): Permanently delete an API key using the Unkey CLI. Revoke access immediately for compromised keys, user offboarding, or account cleanup.
 - [get-key](https://unkey.com/docs/cli/keys/get-key.md): Retrieve detailed information about an API key using the Unkey CLI including metadata, permissions, rate limits, and remaining credits.
@@ -319,10 +323,11 @@
 - [Rollback deployment](https://unkey.com/docs/api-reference/deployments/rollback-deployment.md): Roll live traffic back to a previous deployment. `deploymentId` is the deployment to roll back TO; the app's current deployment is used as the rollback source automatically.
 - [Start deployment](https://unkey.com/docs/api-reference/deployments/start-deployment.md): Start a deployment that was previously stopped with `stopDeployment`, so it serves traffic again. The deployment keeps the configuration it had when it was stopped; nothing is rebuilt or redeployed.
 - [Stop deployment](https://unkey.com/docs/api-reference/deployments/stop-deployment.md): Stop a running preview deployment. Stopped deployments keep their configuration and can be resumed later with `startDeployment`.
+- [Create deployment](https://unkey.com/docs/api-reference/deployments/create-deployment-1.md): Create a deployment for an app in a project.
 - [Create domain](https://unkey.com/docs/api-reference/domains/create-domain.md): Attach a custom domain to an environment and start verifying it.
 - [Delete domain](https://unkey.com/docs/api-reference/domains/delete-domain.md): Delete a custom domain from your workspace.
 - [Get domain](https://unkey.com/docs/api-reference/domains/get-domain.md): Retrieve a custom domain and its verification status.
-- [List domains](https://unkey.com/docs/api-reference/domains/list-domains.md): List the custom domains attached to an environment and their verification status.
+- [List domains](https://unkey.com/docs/api-reference/domains/list-domains.md): List your custom domains with their verification status and DNS records. Filter by project, app, or environment using IDs or slugs, or send `{}` to list domains across your workspace.
 - [Verify domain](https://unkey.com/docs/api-reference/domains/verify-domain.md): Restart verification for a custom domain.
 - [Get environment](https://unkey.com/docs/api-reference/environments/get-environment.md): Retrieve a single environment by its id.
 - [List environment variables](https://unkey.com/docs/api-reference/environments/list-environment-variables.md): Retrieve the environment variables for an environment.
