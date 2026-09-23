@@ -41,6 +41,7 @@
 - [Overview](https://unkey.com/docs/platform/root-keys/overview.md): Create and manage root keys for programmatic access to the Unkey API. Root keys authenticate CLI tools, SDKs, and server-side requests.
 - [Permissions](https://unkey.com/docs/platform/root-keys/permissions.md): Complete reference of all root key permissions in Unkey. Control which API operations each root key can perform across your workspace.
 - [Gateway](https://unkey.com/docs/platform/gateway/overview.md): The gateway enforces policies on every request before it reaches your app, rejecting traffic that fails authentication, rate limits, or other checks.
+- [Local gateway](https://unkey.com/docs/platform/gateway/local-development.md): Run Frontline with Docker Compose to verify real API keys and inspect forwarded request headers.
 - [Overview](https://unkey.com/docs/platform/gateway/authentication.md): Learn how the gateway authenticates incoming requests and forwards verified identity information to your application.
 - [Principal](https://unkey.com/docs/platform/gateway/principal/overview.md): The Principal is the verified identity object the gateway produces after authentication and forwards to your application via headers.
 - [API key](https://unkey.com/docs/platform/gateway/principal/sources/api-key.md): Reference for Principal fields produced by gateway API key authentication including key ID, owner, permissions, and custom metadata.
