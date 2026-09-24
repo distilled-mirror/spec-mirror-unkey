@@ -3465,11 +3465,6 @@
               "keys:reroll"
             ]
           },
-          "preview": {
-            "type": "boolean",
-            "default": false,
-            "description": "When true, creates a preview session for testing the portal experience.\n"
-          },
           "returnUrl": {
             "type": "string",
             "format": "uri",
