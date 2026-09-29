@@ -41,15 +41,15 @@ Our error format follows RFC7807 Problem Details standard within our consistent 
 
 ## Common Error Types
 
-| Status | Error Type            | Description                                      |
-| ------ | --------------------- | ------------------------------------------------ |
-| 400    | validation-error      | The request body failed validation               |
-| 401    | unauthorized          | Missing or invalid authorization                 |
-| 403    | forbidden             | Valid authorization but insufficient permissions |
-| 404    | not-found             | The requested resource was not found             |
-| 409    | conflict              | The request conflicts with the current state     |
-| 429    | rate-limited          | You've exceeded your rate limit                  |
-| 500    | internal-server-error | An unexpected error occurred on our servers      |
+| Status | Error Type | Description |
+| - | - | - |
+| 400 | validation-error | The request body failed validation |
+| 401 | unauthorized | Missing or invalid authorization |
+| 403 | forbidden | Valid authorization but insufficient permissions |
+| 404 | not-found | The requested resource was not found |
+| 409 | conflict | The request conflicts with the current state |
+| 429 | rate-limited | You've exceeded your rate limit |
+| 500 | internal-server-error | An unexpected error occurred on our servers |
 
 ## Validation Errors
 

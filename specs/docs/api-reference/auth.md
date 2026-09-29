@@ -47,12 +47,12 @@ Unkey implements a sophisticated RBAC (Role-Based Access Control) system for roo
 
 ### Available Resource Types
 
-| Resource Type | Description                                       |
-| ------------- | ------------------------------------------------- |
-| `api`         | API-related resources, such as endpoints and keys |
-| `ratelimit`   | Rate limiting resources and configuration         |
-| `rbac`        | Permissions and roles management                  |
-| `identity`    | User and identity management                      |
+| Resource Type | Description |
+| - | - |
+| `api` | API-related resources, such as endpoints and keys |
+| `ratelimit` | Rate limiting resources and configuration |
+| `rbac` | Permissions and roles management |
+| `identity` | User and identity management |
 
 ### Permission Examples
 
