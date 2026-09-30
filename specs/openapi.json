@@ -4469,6 +4469,7 @@
       },
       "EmptyResponse": {
         "type": "object",
+        "properties": {},
         "additionalProperties": false,
         "description": "Empty response object by design. A successful response indicates this operation was successfully executed."
       },
@@ -6316,6 +6317,7 @@
       },
       "OpenapiPolicy": {
         "type": "object",
+        "properties": {},
         "additionalProperties": false,
         "description": "Validates matching requests against the app's uploaded OpenAPI spec. Has no\nconfiguration of its own. If no spec has been uploaded for the deployment,\nthe policy is a no-op and requests pass through unvalidated.",
         "example": {}
@@ -6516,6 +6518,7 @@
       },
       "BearerTokenLocation": {
         "type": "object",
+        "properties": {},
         "additionalProperties": false,
         "description": "Extract the key from the `Authorization Bearer` header."
       },
@@ -6581,6 +6584,7 @@
       },
       "RemoteIpKey": {
         "type": "object",
+        "properties": {},
         "additionalProperties": false,
         "description": "Rate limit by the client's IP address."
       },
@@ -6601,11 +6605,13 @@
       },
       "AuthenticatedSubjectKey": {
         "type": "object",
+        "properties": {},
         "additionalProperties": false,
         "description": "Rate limit by the authenticated subject (e.g. the verified key)."
       },
       "PathKey": {
         "type": "object",
+        "properties": {},
         "additionalProperties": false,
         "description": "Rate limit by the request path."
       },

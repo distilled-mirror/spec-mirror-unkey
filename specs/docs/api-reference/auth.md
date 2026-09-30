@@ -2,113 +2,51 @@
 > Fetch the complete documentation index at: https://unkey.com/docs/llms.txt
 > Use this file to discover all available pages before exploring further.
 
-# Authentication
+> ## Agent Instructions
+> Unkey is two separate products. Compute builds, deploys, and runs apps behind a gateway. API Management issues API keys, enforces rate limits, manages identities and permissions, and reports usage. Say which product a page belongs to; a reader can use either without the other.
+> Every Unkey API endpoint is an HTTP POST to https://api.unkey.com/v2/{service}.{procedure} with a root key in the Authorization: Bearer header. Root keys are workspace scoped.
+> Error codes have the form err:{system}:{category}:{specific} and each has a page at /errors/{system}/{category}/{specific}.
+> The word environment means production or preview in Compute. Rate limiting has four meanings on this site; the glossary lists them.
 
-> Authenticate your requests to the Unkey API using root keys passed as Bearer tokens in the Authorization header. Generate and manage root keys.
+# API authentication
 
-Almost all Unkey API endpoints require authentication using a root key. Root keys provide access to your Unkey resources based on their assigned permissions.
+> Send your root key as a bearer token and read the errors a bad key returns.
 
-## Bearer Authentication
+Every call to `https://api.unkey.com` needs a root key as a bearer token. The only exception is the customer portal's end-user endpoints, which take a portal session instead.
 
-Authentication is performed using HTTP Bearer authentication in the `Authorization` header:
+## Send a root key
 
-```bash theme={"theme":"kanagawa-wave"}
-Authorization: Bearer unkey_1234567890
-```
+Put the key in the `Authorization` header after `Bearer `:
 
-Example request:
-
-```bash theme={"theme":"kanagawa-wave"}
-curl -X POST "https://api.unkey.com/v2/keys.createKey" \
-  -H "Authorization: Bearer unkey_1234567890" \
+```bash theme={"system"}
+curl -X POST https://api.unkey.com/v2/apis.listKeys \
+  -H "Authorization: Bearer unkey_1234abcd..." \
   -H "Content-Type: application/json" \
-  -d '{ "apiId": "api_1234" }'
+  -d '{"apiId": "api_1234abcd"}'
 ```
 
-## Security Best Practices
+A root key belongs to one workspace, and every request stays inside it. You don't pass a workspace ID, and a key can't reach another workspace. See [Root keys](/docs/platform/root-keys/overview) to create one.
 
-Never expose your root key in client-side code or include it in public repositories. For frontend applications, always use a backend server to proxy requests to the Unkey API.
+## Errors a bad key returns
 
-## Root Key Management
+| Status | Code | What it means |
+| - | - | - |
+| 400 | `err:unkey:authentication:missing` | There's no `Authorization` header. |
+| 400 | `err:unkey:authentication:malformed` | The header is missing the `Bearer ` prefix, or has nothing after it. |
+| 401 | `err:unkey:authentication:key_not_found` | The key doesn't exist or was deleted. |
+| 403 | `err:unkey:authorization:key_disabled` | The key is disabled. |
+| 403 | `err:unkey:authorization:workspace_disabled` | The key's workspace is disabled. |
+| 403 | `err:unkey:authorization:forbidden` | The key has expired, for example because a rotation's grace period ended. |
+| 403 | `err:unkey:authorization:insufficient_permissions` | The key doesn't have the permission the endpoint needs. The `detail` names it. Some endpoints return `404` instead, the same as if the resource didn't exist. See [Root key permissions](/docs/platform/root-keys/permissions). |
 
-Root keys can be created and managed through the Unkey dashboard. We recommend:
+All of these use the standard [error envelope](/docs/platform/api/errors), so one error handler covers them.
 
-1. **Using Different Keys for Different Environments**: Maintain separate root keys for development, staging, and production
-2. **Rotating Keys Regularly**: Create new keys periodically and phase out old ones
-3. **Setting Clear Key Names**: Name your keys according to their use case for better manageability
+## Keep root keys safe
 
-## Key Permissions System
+Treat a root key like a database password:
 
-Unkey implements a sophisticated RBAC (Role-Based Access Control) system for root keys. Permissions are defined as tuples of:
+* Create one per service with only the permissions that service needs. A leaked key then does less damage and is easy to replace.
+* Never put a root key in client-side code, a mobile app, or a public repository.
+* If one leaks, rotate or delete it under **Settings > Root Keys**. See [Root keys](/docs/platform/root-keys/overview).
 
-* **ResourceType**: The category of resource (api, ratelimit, rbac, identity)
-* **ResourceID**: The specific resource instance
-* **Action**: The operation to perform on that resource
-
-### Available Resource Types
-
-| Resource Type | Description |
-| - | - |
-| `api` | API-related resources, such as endpoints and keys |
-| `ratelimit` | Rate limiting resources and configuration |
-| `rbac` | Permissions and roles management |
-| `identity` | User and identity management |
-
-### Permission Examples
-
-Specific permission to manage a single API:
-
-```text theme={"theme":"kanagawa-wave"}
-api.api_1234.read_api
-api.api_1234.update_api
-```
-
-Wildcard permission to manage all rate limit namespaces:
-
-```text theme={"theme":"kanagawa-wave"}
-ratelimit.*.create_namespace
-ratelimit.*.read_namespace
-```
-
-When creating root keys, you can specify exactly what actions they're allowed to perform.
-
-## Authentication Errors
-
-If your authentication fails, you'll receive a 401 Unauthorized or 403 Forbidden response with an error message:
-
-```json theme={"theme":"kanagawa-wave"}
-{
-  "meta": {
-    "requestId": "req_abc123xyz789"
-  },
-  "error": {
-    "title": "Unauthorized",
-    "detail": "The provided root key is invalid or has been revoked",
-    "status": 401,
-    "type": "https://unkey.com/docs/errors/unauthorized"
-  }
-}
-```
-
-If your key is valid but lacks sufficient permissions, you'll receive a 403 Forbidden response:
-
-```json theme={"theme":"kanagawa-wave"}
-{
-  "meta": {
-    "requestId": "req_abc123xyz789"
-  },
-  "error": {
-    "title": "Forbidden",
-    "detail": "Your key does not have the required 'api.api_1234.update_api' permission",
-    "status": 403,
-    "type": "https://unkey.com/docs/errors/forbidden"
-  }
-}
-```
-
-Common authentication issues include:
-
-* Missing the Authorization header
-* Invalid key format
-* Revoked or expired root key
-* Using a key with insufficient permissions
+Root keys are for managing Unkey. They aren't the API keys you issue to your own users, which you check with `keys.verifyKey`. See [Verifying keys](/docs/api-management/keys/verifying-keys).

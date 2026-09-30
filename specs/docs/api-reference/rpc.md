@@ -2,70 +2,63 @@
 > Fetch the complete documentation index at: https://unkey.com/docs/llms.txt
 > Use this file to discover all available pages before exploring further.
 
-# RPC-Style API
+> ## Agent Instructions
+> Unkey is two separate products. Compute builds, deploys, and runs apps behind a gateway. API Management issues API keys, enforces rate limits, manages identities and permissions, and reports usage. Say which product a page belongs to; a reader can use either without the other.
+> Every Unkey API endpoint is an HTTP POST to https://api.unkey.com/v2/{service}.{procedure} with a root key in the Authorization: Bearer header. Root keys are workspace scoped.
+> Error codes have the form err:{system}:{category}:{specific} and each has a page at /errors/{system}/{category}/{specific}.
+> The word environment means production or preview in Compute. Rate limiting has four meanings on this site; the glossary lists them.
 
-> Understand Unkey's RPC-style API design that uses action-oriented endpoints like verifyKey and createKey instead of REST resources.
+# RPC naming convention
 
-We use an RPC (Remote Procedure Call) style API that focuses on *actions* rather than resources. This means endpoints represent specific operations:
+> Work out any endpoint's name from the POST /v2/{service}.{procedure} pattern.
 
-```text theme={"theme":"kanagawa-wave"}
-https://api.unkey.com/v2/{service}.{procedure}
+Every Unkey API endpoint is a `POST` to a path that names a service and a procedure, like `/v2/keys.verifyKey` or `/v2/deployments.promoteDeployment`. It isn't REST: the path doesn't name a resource, and the HTTP method doesn't say what the call does. All parameters go in the JSON body.
+
+## The shape
+
+```text theme={"system"}
+POST https://api.unkey.com/v2/{service}.{procedure}
+Content-Type: application/json
+Authorization: Bearer <root key>
 ```
 
-For example:
+The `service` is a camelCase noun for a group of resources, and the `procedure` is a camelCase verb phrase that usually ends in the resource name. IDs go in the body, not the path. For example, to fetch a key you send `{"keyId": "key_..."}` to `keys.getKey`. There are no query strings.
 
-* `POST /v2/keys.createKey` - Create a new API key
-* `POST /v2/ratelimit.limit` - Check or enforce a rate limit
+There are three `GET` exceptions: `/v2/liveness`, a health check that needs no root key, and `/openapi.yaml` and `/reference`, which serve the OpenAPI document and a browsable reference.
 
-We chose this approach because it maps directly to the operations developers want to perform, making the API intuitive to use.
+## Services
 
-## HTTP Methods
+Almost every procedure is under `/v2`. A procedure gets a new version prefix when its request or response changes in a breaking way. So far that's happened once, for `/v3/deployments.createDeployment`. Each service belongs to one product, and its endpoints are documented there.
 
-We exclusively use POST for all operations. While this deviates from REST conventions, it provides several advantages:
+| Service | Product | What its procedures manage |
+| - | - | - |
+| `apis` | API Management | Keyspaces (called APIs in the endpoint names) and listing their keys. |
+| `keys` | API Management | Creating, verifying, updating, rerolling, and deleting API keys, and their permissions and roles. |
+| `identities` | API Management | Identities shared by several keys. |
+| `permissions` | API Management | Permissions and roles you define for your keys. |
+| `ratelimit` | API Management | The standalone <Tooltip tip="Here: the standalone ratelimit API you call with your own identifier. Not a key's limit and not the gateway policy.">rate limiting</Tooltip> service and its overrides. Singular, not `ratelimits`. |
+| `portal` | API Management | Developer portals and the end-user sessions they mint. |
+| `analytics` | Both | SQL queries over verifications, rate limits, gateway requests, and runtime logs. |
+| `projects` | Compute | Projects. |
+| `apps` | Compute | Apps within a project, including the git connection. |
+| `environments` | Compute | Environment settings and variables. |
+| `deployments` | Compute | Creating, starting, stopping, promoting, and rolling back deployments. |
+| `domains` | Compute | Custom domains and their <Tooltip tip="Here: proving you control a custom domain. Not key verification and not the gateway's key-auth policy.">verification</Tooltip>. |
+| `gateway` | Compute | Gateway policies on an environment. |
+| `github` | Compute | Installing the Unkey GitHub App for the workspace. |
 
-1. **Consistent Request Pattern**: All requests follow the same pattern regardless of operation
-2. **Rich Query Parameters**: Complex filtering and querying without URL length limitations
-3. **Security and Compatibility**: Avoids issues with proxies or firewalls logging potentially sensitive parameters in the url
+## Verbs
 
-## Request Format
+Procedures use a small set of verbs, so you can often guess a name:
 
-All requests should:
+* `create`, `get`, `list`, `update`, and `delete` for the basics.
+* Action verbs where a resource does something, such as `verifyKey`, `rerollKey`, `migrateKeys`, `limit`, `multiLimit`, `setOverride`, `promoteDeployment`, `rollbackDeployment`, `setPolicies`, and `installApp`.
 
-* Use the POST HTTP method
-* Include a Content-Type header set to application/json
-* Include an Authorization header (see Authentication documentation)
-* Send parameters as a JSON object in the request body
+`set` procedures (`setPermissions`, `setRoles`, `setPolicies`, `setEnvironmentVariables`) replace the whole list. `add` and `remove` procedures change one part of it.
 
-Example:
+## Deprecated procedures
 
-```bash theme={"theme":"kanagawa-wave"}
-curl -X POST "https://api.unkey.com/v2/keys.createKey" \
-  -H "Authorization: Bearer root_1234567890" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "apiId": "api_1234",
-    "name": "Production API Key"
-  }'
-```
+When a procedure is replaced, the old path keeps working for a while and shows a deprecation badge in the reference. Use the newest path in new code. Three paths are deprecated today:
 
-## Service Namespaces
-
-Our API is organized into logical service namespaces that group related procedures:
-
-* **keys** - API key operations (create, verify, revoke)
-* **apis** - API configuration and settings
-* **ratelimit** - Rate limiting services
-* **analytics** - Usage and performance data
-* **identities** - Identity management
-* **permissions** - Permission management
-
-Each namespace contains multiple procedures that perform specific actions within that domain.
-
-## Benefits of RPC Design
-
-We believe our RPC-style approach offers significant benefits:
-
-1. **Clarity of Intent**: Endpoint names clearly communicate the action being performed
-2. **Natural Code Mapping**: Endpoints naturally map to code and user intent (`keys.createKey()` instead of `POST /keys`)
-3. **Complex Operations**: Supports complex operations that don't map well to REST's resource model
-4. **Flexibility**: Allows for more flexible request structures without being constrained by URL parameters
+* `/v2/deploy.createDeployment` and `/v2/deploy.getDeployment` are replaced by the `deployments` service.
+* `/v2/deployments.createDeployment` is replaced by `/v3/deployments.createDeployment`, which takes an `oci` source instead of `image` and lets you leave out the source to use the app's default.

@@ -2,120 +2,94 @@
 > Fetch the complete documentation index at: https://unkey.com/docs/llms.txt
 > Use this file to discover all available pages before exploring further.
 
-# Error Handling
+> ## Agent Instructions
+> Unkey is two separate products. Compute builds, deploys, and runs apps behind a gateway. API Management issues API keys, enforces rate limits, manages identities and permissions, and reports usage. Say which product a page belongs to; a reader can use either without the other.
+> Every Unkey API endpoint is an HTTP POST to https://api.unkey.com/v2/{service}.{procedure} with a root key in the Authorization: Bearer header. Root keys are workspace scoped.
+> Error codes have the form err:{system}:{category}:{specific} and each has a page at /errors/{system}/{category}/{specific}.
+> The word environment means production or preview in Compute. Rate limiting has four meanings on this site; the glossary lists them.
 
-> Handle Unkey API errors with structured error codes, HTTP status codes, and actionable messages. Includes retry strategies and examples.
+# API error envelope
 
-Error responses maintain the same top-level structure as successful responses, but with an `error` object instead of `data`:
+> Read the error object a failed request returns and find the page for its code.
 
-```json theme={"theme":"kanagawa-wave"}
+When a request fails, the response has an `error` object instead of `data`. Every Unkey error has the same shape (Problem Details for HTTP APIs, RFC 7807), so one handler covers them all. The `type` field links to the page for that error.
+
+```json theme={"system"}
 {
-  "meta": {
-    "requestId": "req_abc123xyz789"
-  },
+  "meta": { "requestId": "req_2c9a0jf23l4k567" },
   "error": {
-    "title": "Validation Error",
-    "detail": "You must provide a valid API ID.",
-    "status": 400,
-    "type": "https://unkey.com/docs/errors/validation-error",
-    "errors": [
-      {
-        "location": "body.apiId",
-        "message": "API not found",
-        "fix": "Provide a valid API ID or create a new API"
-      }
-    ]
+    "title": "Insufficient Permissions",
+    "detail": "Missing one of these permissions: api.*.delete_api or api.api_1234abcd.delete_api",
+    "status": 403,
+    "type": "https://unkey.com/docs/errors/unkey/authorization/insufficient_permissions"
   }
 }
 ```
 
-## Error Format
+## Fields
 
-Our error format follows RFC7807 Problem Details standard within our consistent envelope structure, providing:
+<ResponseField name="title" type="string" required>
+  A short summary, for example `Not Found` or `Insufficient Permissions`. It doesn't change for a given problem, but match on `type` in code.
+</ResponseField>
 
-* **title**: A short, human-readable summary of the problem
-* **detail**: A human-readable explanation specific to this occurrence
-* **status**: The HTTP status code (also returned in the HTTP response)
-* **type**: A URI reference that identifies the problem type and points to documentation
-* **errors**: (Optional) An array of specific validation errors when multiple issues occur
+<ResponseField name="detail" type="string" required>
+  A plain explanation of what went wrong, written to help a developer fix it. It can name the field, resource, or permission involved. Don't parse it, because the wording can change.
+</ResponseField>
 
-## Common Error Types
+<ResponseField name="status" type="integer" required>
+  The HTTP status code, repeated in the body.
+</ResponseField>
 
-| Status | Error Type | Description |
+<ResponseField name="type" type="string" required>
+  A URL that identifies the error and links to its page. The last three path segments are the error code, `err:{system}:{category}:{specific}`. Match on this field to handle a specific error. Error pages on this site shorten it to the path, but the API always sends the full URL.
+</ResponseField>
+
+<ResponseField name="errors" type="array">
+  Sent with 400, 408, 413, and 499 responses. When the request fails validation, it has one entry per problem, so you can fix them all at once. Otherwise it's an empty array.
+
+  <Expandable title="properties">
+    <ResponseField name="location" type="string" required>
+      A JSON path to the part of the request with the problem, such as `body.permissions[0].name` or `body.limit`.
+    </ResponseField>
+
+    <ResponseField name="message" type="string" required>
+      Which validation rule failed.
+    </ResponseField>
+
+    <ResponseField name="fix" type="string">
+      A suggestion for satisfying the rule. Not every validation error carries one.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Status codes
+
+What each status means on this API, and the codes you'll see most often with it:
+
+| Status | Meaning | Typical codes |
 | - | - | - |
-| 400 | validation-error | The request body failed validation |
-| 401 | unauthorized | Missing or invalid authorization |
-| 403 | forbidden | Valid authorization but insufficient permissions |
-| 404 | not-found | The requested resource was not found |
-| 409 | conflict | The request conflicts with the current state |
-| 429 | rate-limited | You've exceeded your rate limit |
-| 500 | internal-server-error | An unexpected error occurred on our servers |
+| 400 | The request is malformed or fails validation. `errors` lists the problems. | `err:unkey:application:invalid_input`, `err:unkey:authentication:missing`, `err:unkey:authentication:malformed`, and, under `err:user:bad_request:`, `request_body_unreadable`, `permissions_query_syntax_error`, `invalid_analytics_query`, `invalid_analytics_table`, `invalid_analytics_function`, `invalid_analytics_query_type`, `query_range_exceeds_retention`, `per_key_breakout_too_large` |
+| 401 | The bearer token does not identify a key or a portal session. | `err:unkey:authentication:key_not_found`, `err:unkey:authentication:portal_session_not_found` |
+| 403 | The key is known but may not do this. | `err:unkey:authorization:insufficient_permissions`, `err:unkey:authorization:key_disabled`, `err:unkey:authorization:workspace_disabled`, `err:unkey:authorization:forbidden`, `err:unkey:limits:custom_domain_limit_exceeded` |
+| 404 | The named resource does not exist in your workspace, or you may not see it. | `err:unkey:data:*_not_found` for each resource type |
+| 408 | The request took too long to read. | `err:user:bad_request:request_timeout` |
+| 409 | Creating a resource that already exists. | `err:unkey:data:*_already_exists` for identities, roles, permissions, projects, apps, domains, portals |
+| 410 | The resource existed and has been removed. | `err:unkey:data:ratelimit_namespace_gone` |
+| 412 | A precondition on the resource is not met. | `err:unkey:application:protected_resource`, `err:unkey:application:precondition_failed` |
+| 413 | The body exceeds the size limit. | `err:user:bad_request:request_body_too_large` |
+| 422 | The request was valid but could not be executed as asked. | Under `err:user:unprocessable_entity:`, `query_execution_timeout`, `query_memory_limit_exceeded`, `query_rows_limit_exceeded` |
+| 429 | A quota is exceeded. | `err:user:too_many_requests:query_quota_exceeded` |
+| 499 | You closed the connection before the response was written. | `err:user:bad_request:client_closed_request` |
+| 500 | Something failed on our side. Quote `meta.requestId` to support. | `err:unkey:application:unexpected_error`, `err:unkey:application:service_unavailable`, `err:unkey:application:assertion_failed` |
+| 503 | The analytics backend is unreachable. Retry with backoff. | `err:unkey:data:analytics_connection_failed` |
 
-## Validation Errors
+An invalid key isn't an HTTP error. When you verify a key that isn't valid, `keys.verifyKey` returns HTTP 200 with `data.valid: false` and a `data.code`, because your request worked. The HTTP errors above are for problems with your request or your root key. See [Verifying keys](/docs/api-management/keys/verifying-keys).
 
-For validation errors, we provide detailed information about each failed validation:
+## Handling errors
 
-* **location**: Where in the request the error occurred (e.g., `body.name`, `query.limit`)
-* **message**: What went wrong with the specific field
-* **fix**: (When possible) A suggestion for how to fix the issue
+1. Check `status`. A 4xx means fix the request. A 500 or 503 means retry.
+2. For a 4xx, branch on `type` if you need to tell causes apart. Show `detail` to developers, never to end users.
+3. For a 400, show each entry in `errors` with its `location` and `message`.
+4. Always log `meta.requestId` with the error, so support can find the exact request.
 
-## Error Recovery
-
-Our error messages are designed to be actionable. Each error includes:
-
-1. A clear explanation of what went wrong
-2. Often, a suggestion for how to fix the issue
-3. For validation errors, the specific fields that failed validation
-
-## Using the Request ID for Support
-
-When reporting issues to our support team, always include the `requestId` from the error response. This unique identifier allows us to quickly locate the specific request in our logs and provide faster, more accurate assistance.
-
-## Error Handling Best Practices
-
-1. **Check for Status Codes**: Always check HTTP status codes first to determine broad error categories
-2. **Extract Error Details**: Parse the error object for detailed information
-3. **Implement Retries Carefully**: Only retry on 5xx errors or when explicitly advised
-4. **Log Complete Errors**: Log the full error response for debugging purposes
-
-Example error handling in JavaScript:
-
-```javascript theme={"theme":"kanagawa-wave"}
-try {
-  const response = await fetch("https://api.unkey.com/v2/keys.createKey", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${rootKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(keyData),
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    // Extract and handle the error
-    const { meta, error } = data;
-    console.error(`Error ${error.status}: ${error.title}`, {
-      requestId: meta.requestId,
-      detail: error.detail,
-      docs: error.type,
-    });
-
-    // Handle validation errors specifically
-    if (error.errors) {
-      error.errors.forEach((err) => {
-        console.error(`- ${err.location}: ${err.message}`);
-      });
-    }
-
-    throw new Error(`API Error: ${error.detail}`);
-  }
-
-  return data.data; // Return just the data portion on success
-} catch (err) {
-  // Handle network errors or other exceptions
-  console.error("Request failed:", err);
-  throw err;
-}
-```
+Every code has its own page with a "How to fix" section, under Errors in the Platform navigation.
