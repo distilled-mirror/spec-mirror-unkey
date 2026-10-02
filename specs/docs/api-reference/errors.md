@@ -93,3 +93,6 @@ An invalid key isn't an HTTP error. When you verify a key that isn't valid, `key
 4. Always log `meta.requestId` with the error, so support can find the exact request.
 
 Every code has its own page with a "How to fix" section, under Errors in the Platform navigation.
+
+
+This documentation is built and hosted on [Mintlify](https://mintlify.com), a developer documentation platform.

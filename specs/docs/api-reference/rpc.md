@@ -62,3 +62,6 @@ When a procedure is replaced, the old path keeps working for a while and shows a
 
 * `/v2/deploy.createDeployment` and `/v2/deploy.getDeployment` are replaced by the `deployments` service.
 * `/v2/deployments.createDeployment` is replaced by `/v3/deployments.createDeployment`, which takes an `oci` source instead of `image` and lets you leave out the source to use the app's default.
+
+
+This documentation is built and hosted on [Mintlify](https://mintlify.com), a developer documentation platform.

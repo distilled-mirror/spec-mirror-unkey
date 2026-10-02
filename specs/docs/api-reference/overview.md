@@ -111,3 +111,6 @@ List endpoints use a cursor instead of page numbers. Each request takes an optio
 </Steps>
 
 Keep the other request fields the same on every page. If you change a filter partway through, the cursor no longer works.
+
+
+This documentation is built and hosted on [Mintlify](https://mintlify.com), a developer documentation platform.

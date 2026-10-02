@@ -88,6 +88,7 @@
 - [permission_not_found](https://unkey.com/docs/errors/unkey/data/permission_not_found.md): A permission named in the request does not exist in the workspace.
 - [policy_not_found](https://unkey.com/docs/errors/unkey/data/policy_not_found.md): The gateway policy id is not in the environment's current policy list.
 - [portal_already_exists](https://unkey.com/docs/errors/unkey/data/portal_already_exists.md): The portal slug is taken, or the app or keyspace already has a portal.
+- [portal_changed](https://unkey.com/docs/errors/unkey/data/portal_changed.md): The portal was pointed at a different app or keyspace while the session was being created.
 - [portal_not_found](https://unkey.com/docs/errors/unkey/data/portal_not_found.md): No portal in your workspace matches the id, slug, app, or keyspace.
 - [project_already_exists](https://unkey.com/docs/errors/unkey/data/project_already_exists.md): Another project in the workspace already uses that slug.
 - [project_not_found](https://unkey.com/docs/errors/unkey/data/project_not_found.md): The project does not exist in your workspace.
@@ -474,3 +475,6 @@
 ## OpenAPI Specs
 
 - [openapi-json-with-code-samples](https://spec.speakeasy.com/unkey/unkey/openapi-json-with-code-samples)
+
+
+This documentation is built and hosted on [Mintlify](https://mintlify.com), a developer documentation platform.

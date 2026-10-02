@@ -50,3 +50,6 @@ Treat a root key like a database password:
 * If one leaks, rotate or delete it under **Settings > Root Keys**. See [Root keys](/docs/platform/root-keys/overview).
 
 Root keys are for managing Unkey. They aren't the API keys you issue to your own users, which you check with `keys.verifyKey`. See [Verifying keys](/docs/api-management/keys/verifying-keys).
+
+
+This documentation is built and hosted on [Mintlify](https://mintlify.com), a developer documentation platform.
