@@ -22,8 +22,9 @@
 - [Limits](https://unkey.com/docs/platform/billing/limits.md): See the limits your plan puts on your workspace.
 - [Usage](https://unkey.com/docs/platform/billing/usage.md): Check what your workspace has used this month before the invoice arrives.
 - [Root keys](https://unkey.com/docs/platform/root-keys/overview.md): Create and rotate the root keys that authenticate you to the Unkey API.
-- [Root key permissions](https://unkey.com/docs/platform/root-keys/permissions.md): Grant a root key exactly the operations it needs, and read the error when one is missing.
-- [Permission reference](https://unkey.com/docs/platform/root-keys/permissions-legacy.md): Find the exact resource.id.action string a root key needs for each operation.
+- [Root key permissions](https://unkey.com/docs/platform/root-keys/permissions.md): Choose permissions for your root key based on the task it needs to perform.
+- [Configure root keys](https://unkey.com/docs/platform/root-keys/configure.md): Assign scoped permissions in the dashboard or create and update root keys through the API.
+- [Permission reference](https://unkey.com/docs/platform/root-keys/permission-reference.md): Look up resource paths, supported actions, and permission requirements for common operations.
 - [HTTP API basics](https://unkey.com/docs/platform/api/overview.md): Call the Unkey API: one base URL, POST endpoints, and a shared response envelope.
 - [API authentication](https://unkey.com/docs/platform/api/authentication.md): Send your root key as a bearer token and read the errors a bad key returns.
 - [RPC naming convention](https://unkey.com/docs/platform/api/rpc-convention.md): Work out any endpoint's name from the POST /v2/{service}.{procedure} pattern.
@@ -243,7 +244,7 @@
 - [OpenAPI validation policy](https://unkey.com/docs/compute/gateway/openapi-validation.md): Reject requests that do not match your OpenAPI spec before they reach your app.
 - [Logging policy](https://unkey.com/docs/compute/gateway/logging.md): Add headers, query data, and bodies to the request log for the requests you choose.
 - [The principal header](https://unkey.com/docs/compute/gateway/principal.md): The X-Unkey-Principal header your app receives after the gateway verifies a key.
-- [Local development with the gateway](https://unkey.com/docs/compute/gateway/local-development.md): Send your own X-Unkey-Principal header to test your app locally, and use a preview environment to test your policies.
+- [Local development with the gateway](https://unkey.com/docs/compute/gateway/local-development.md): Run Frontline locally with Docker Compose to verify real API keys and inspect forwarded request headers.
 - [Gateway errors](https://unkey.com/docs/compute/gateway/errors.md): What the gateway returns when it rejects or cannot serve a request.
 - [Observability](https://unkey.com/docs/compute/observe/overview.md): The signals Unkey records for a running app and where to find each one.
 - [Request logs](https://unkey.com/docs/compute/observe/requests.md): Inspect every request the gateway proxied and what a logging policy adds to it.

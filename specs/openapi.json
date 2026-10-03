@@ -3695,6 +3695,61 @@
         },
         "additionalProperties": false
       },
+      "V2PortalListSessionsRequestBody": {
+        "type": "object",
+        "required": [
+          "portal"
+        ],
+        "properties": {
+          "portal": {
+            "$ref": "#/components/schemas/ResourceIdentifier"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of end users to return per request.",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 100
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Pagination cursor from a previous response to fetch the next page.\nUse when `hasMore: true` in the previous response.\n",
+            "example": "user_123"
+          },
+          "search": {
+            "type": "string",
+            "maxLength": 256,
+            "description": "Returns only end users whose `externalId` starts with this string.\nMatching is case-sensitive, and `%` and `_` match literally.\n",
+            "example": "user_"
+          }
+        },
+        "additionalProperties": false
+      },
+      "V2PortalListSessionsResponseBody": {
+        "type": "object",
+        "required": [
+          "meta",
+          "data",
+          "pagination"
+        ],
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          },
+          "data": {
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "$ref": "#/components/schemas/V2PortalListSessionsResponseData"
+            },
+            "description": "End users with revocable sessions, ordered by `externalId`."
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        },
+        "additionalProperties": false
+      },
       "V2PortalRevokeSessionRequestBody": {
         "type": "object",
         "required": [
@@ -8000,6 +8055,77 @@
           "$ref": "#/components/schemas/KeyResponseData"
         },
         "description": "Array of the portal end user's API keys."
+      },
+      "V2PortalListSessionsResponseData": {
+        "type": "object",
+        "required": [
+          "externalId",
+          "sessions"
+        ],
+        "properties": {
+          "externalId": {
+            "type": "string",
+            "description": "The end user's identifier, as passed to `portal.createSession`.",
+            "example": "user_123"
+          },
+          "sessions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/V2PortalListSessionsSession"
+            },
+            "description": "The end user's revocable sessions, newest first."
+          }
+        },
+        "additionalProperties": false
+      },
+      "V2PortalListSessionsSession": {
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "createdAt",
+          "expiresAt",
+          "scopes"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The session id.",
+            "example": "ps_1234abcd"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "active"
+            ],
+            "description": "`pending` when the portal URL was created but not opened yet. `active`\nwhen the end user opened it.\n",
+            "example": "active"
+          },
+          "createdAt": {
+            "type": "integer",
+            "format": "int64",
+            "description": "When the session was created, in Unix milliseconds.",
+            "example": 1704067200000
+          },
+          "expiresAt": {
+            "type": "integer",
+            "format": "int64",
+            "description": "When the session stops working, in Unix milliseconds. For a `pending`\nsession this is when its portal URL expires.\n",
+            "example": 1704153600000
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The capabilities the session was created with.",
+            "example": [
+              "keys:read"
+            ]
+          }
+        },
+        "additionalProperties": false
       },
       "V2PortalRevokeSessionResponseData": {
         "type": "object",
@@ -18446,6 +18572,95 @@
           },
           "type": "cursor"
         }
+      }
+    },
+    "/v2/portal.listSessions": {
+      "post": {
+        "description": "List the end users holding a revocable session on a portal, with each\nend user's sessions.\n\nUnreleased and subject to change without notice.\n\nA session is revocable until it expires or is revoked. That includes\nsessions whose portal URL was created but not opened yet. Pass an end\nuser's `externalId` to `portal.revokeSession` to end their sessions.\n\n**Required Permissions**\n\nYour root key must have one of:\n- `portal.*.create_portal_session` (for any portal in the workspace)\n- `portal.<portal_id>.create_portal_session` (for a specific portal)\n\nIt also accepts `unkey:v1:<workspace_id>:projects/<project_id>/portals/<portal_id>/sessions/*`\nwith `#read` or `#write`. Reading the portal itself is not enough.\n\nWithout the permission this returns **404**, not 403.\n",
+        "operationId": "portal.listSessions",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/V2PortalListSessionsRequestBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V2PortalListSessionsResponseBody"
+                }
+              }
+            },
+            "description": "One page of end users with revocable sessions.\n"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestErrorResponse"
+                }
+              }
+            },
+            "description": "Bad request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundErrorResponse"
+                }
+              }
+            },
+            "description": "No such portal, or your root key may not see its sessions.\n"
+          },
+          "429": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestsErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponse"
+                }
+              }
+            },
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List portal sessions",
+        "tags": [
+          "portal"
+        ],
+        "x-excluded": true,
+        "x-speakeasy-name-override": "listSessions"
       }
     },
     "/v2/portal.rerollKey": {
