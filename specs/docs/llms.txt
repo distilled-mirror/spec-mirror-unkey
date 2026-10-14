@@ -79,6 +79,7 @@
 - [domain_already_exists](https://unkey.com/docs/errors/unkey/data/domain_already_exists.md): The custom domain is already attached to your workspace.
 - [domain_not_found](https://unkey.com/docs/errors/unkey/data/domain_not_found.md): The custom domain is not attached to your workspace.
 - [environment_not_found](https://unkey.com/docs/errors/unkey/data/environment_not_found.md): The project, app, or environment in the request did not resolve.
+- [flag_not_found](https://unkey.com/docs/errors/unkey/data/flag_not_found.md): NotFound indicates the requested flag definition was not found.
 - [identity_already_exists](https://unkey.com/docs/errors/unkey/data/identity_already_exists.md): An identity with that externalId already exists in the workspace.
 - [identity_not_found](https://unkey.com/docs/errors/unkey/data/identity_not_found.md): The identity does not exist in your workspace.
 - [key_auth_not_found](https://unkey.com/docs/errors/unkey/data/key_auth_not_found.md): The keyspaceId passed to the deprecated deploy.createDeployment does not exist.
@@ -93,6 +94,7 @@
 - [portal_not_found](https://unkey.com/docs/errors/unkey/data/portal_not_found.md): No portal in your workspace matches the id, slug, app, or keyspace.
 - [project_already_exists](https://unkey.com/docs/errors/unkey/data/project_already_exists.md): Another project in the workspace already uses that slug.
 - [project_not_found](https://unkey.com/docs/errors/unkey/data/project_not_found.md): The project does not exist in your workspace.
+- [ratelimit_namespace_already_exists](https://unkey.com/docs/errors/unkey/data/ratelimit_namespace_already_exists.md): A rate limit namespace with that name already exists or was deleted in the workspace.
 - [ratelimit_namespace_gone](https://unkey.com/docs/errors/unkey/data/ratelimit_namespace_gone.md): The rate limit namespace was deleted, so ratelimit.limit refuses to use it.
 - [ratelimit_namespace_not_found](https://unkey.com/docs/errors/unkey/data/ratelimit_namespace_not_found.md): The rate limit namespace does not exist in your workspace.
 - [ratelimit_override_not_found](https://unkey.com/docs/errors/unkey/data/ratelimit_override_not_found.md): No rate limit override matches the identifier in that namespace.

@@ -408,7 +408,7 @@
           "revalidateKeysCache": {
             "type": "boolean",
             "default": false,
-            "description": "EXPERIMENTAL: Skip the cache and fetch the keys directly from the database. This ensures you see the most recent state, including keys created moments ago. Use this when:\n- You've just created a key and need to display it immediately\n- You need absolute certainty about the current key state\n- You're debugging cache consistency issues\n\nThis parameter comes with a performance cost and should be used sparingly."
+            "description": "When true, reads keys and their identities from the primary database to avoid replica lag.\nWhen false or omitted, reads from a replica, which may not reflect recent changes.\nPrimary reads can have higher latency, depending on your region."
           }
         },
         "additionalProperties": false
@@ -4250,6 +4250,70 @@
         },
         "additionalProperties": false
       },
+      "V2RatelimitCreateNamespaceRequestBody": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "description": "The name of the namespace, unique within your workspace. Names are case-sensitive.\nPass it as `namespace` to `ratelimit.limit` and the override endpoints.\n",
+            "example": "email.outbound"
+          }
+        },
+        "additionalProperties": false
+      },
+      "V2RatelimitCreateNamespaceResponseBody": {
+        "type": "object",
+        "required": [
+          "meta",
+          "data"
+        ],
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          },
+          "data": {
+            "$ref": "#/components/schemas/RatelimitNamespace"
+          }
+        },
+        "additionalProperties": false
+      },
+      "V2RatelimitDeleteNamespaceRequestBody": {
+        "type": "object",
+        "required": [
+          "namespace"
+        ],
+        "properties": {
+          "namespace": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "description": "The namespace to delete. Pass the namespace ID (`rlns_...`) or its name.\n",
+            "example": "rlns_1234abcd"
+          }
+        },
+        "additionalProperties": false
+      },
+      "V2RatelimitDeleteNamespaceResponseBody": {
+        "type": "object",
+        "required": [
+          "meta",
+          "data"
+        ],
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          },
+          "data": {
+            "$ref": "#/components/schemas/EmptyResponse"
+          }
+        },
+        "additionalProperties": false
+      },
       "V2RatelimitDeleteOverrideRequestBody": {
         "description": "Deletes an existing rate limit override. This permanently removes a custom rate limit rule, reverting affected identifiers back to the default rate limits for the namespace.\n\nUse this endpoint when you need to:\n- Remove special rate limit rules that are no longer needed\n- Reset entities back to standard rate limits\n- Clean up temporary overrides\n- Remove outdated tiering or custom limit rules\n- Fix misconfigured overrides\n\nOnce deleted, the override cannot be recovered, and the operation takes effect immediately.",
         "additionalProperties": false,
@@ -4406,6 +4470,57 @@
         },
         "description": "Error response when the requested resource has been soft-deleted and is no longer available. This occurs when:\n- The resource has been marked as deleted but still exists in the database\n- The resource is intentionally unavailable but could potentially be restored\n- The resource cannot be restored through the API or dashboard\n\nTo resolve this error, contact support if you need the resource restored."
       },
+      "V2RatelimitListNamespacesRequestBody": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of namespaces to return per request.\nOmit this field to receive up to 100 namespaces.\n",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 100
+          },
+          "cursor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024,
+            "description": "Pagination cursor from a previous response to fetch the next page.\nUse when `hasMore: true` in the previous response. Omit this field to start from the first page.\n",
+            "example": "rlns_1234abcd"
+          },
+          "search": {
+            "type": "string",
+            "maxLength": 256,
+            "description": "Free-form text to filter namespaces. Returns namespaces whose ID or name contains the search string. Matching is case-insensitive.\nOmit this field to list every namespace.\n",
+            "example": "api"
+          }
+        },
+        "additionalProperties": false
+      },
+      "V2RatelimitListNamespacesResponseBody": {
+        "type": "object",
+        "required": [
+          "meta",
+          "data",
+          "pagination"
+        ],
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          },
+          "data": {
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "$ref": "#/components/schemas/RatelimitNamespace"
+            },
+            "description": "Namespaces in the workspace, newest first."
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        },
+        "additionalProperties": false
+      },
       "V2RatelimitListOverridesRequestBody": {
         "additionalProperties": false,
         "properties": {
@@ -4526,6 +4641,46 @@
             "$ref": "#/components/schemas/V2RatelimitSetOverrideResponseData"
           }
         }
+      },
+      "V2RatelimitUpdateNamespaceRequestBody": {
+        "type": "object",
+        "required": [
+          "namespace",
+          "name"
+        ],
+        "properties": {
+          "namespace": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "description": "The namespace to rename. Pass the namespace ID (`rlns_...`) or its current name.\n",
+            "example": "rlns_1234abcd"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "description": "The new name of the namespace, unique within your workspace. Names are case-sensitive.\n",
+            "example": "email.outbound"
+          }
+        },
+        "additionalProperties": false
+      },
+      "V2RatelimitUpdateNamespaceResponseBody": {
+        "type": "object",
+        "required": [
+          "meta",
+          "data"
+        ],
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          },
+          "data": {
+            "$ref": "#/components/schemas/RatelimitNamespace"
+          }
+        },
+        "additionalProperties": false
       },
       "V2RootKeysCreateKeyRequestBody": {
         "type": "object",
@@ -4749,6 +4904,26 @@
           }
         }
       },
+      "V2WorkspaceGetFlagsResponseBody": {
+        "type": "object",
+        "required": [
+          "meta",
+          "data"
+        ],
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          },
+          "data": {
+            "type": "object",
+            "description": "Flags keyed by their lowercase snake_case slugs.\nEmpty when no flags are available.\n",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/V2WorkspaceGetFlagsFlag"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
       "V2WorkspaceGetLimitsResponseBody": {
         "type": "object",
         "required": [
@@ -4786,6 +4961,43 @@
           },
           "data": {
             "$ref": "#/components/schemas/V2WorkspaceGetUsageResponseData"
+          }
+        },
+        "additionalProperties": false
+      },
+      "V2WorkspaceUpdateFlagRequestBody": {
+        "type": "object",
+        "required": [
+          "slug",
+          "enabled"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)*$",
+            "description": "Lowercase snake_case slug of the flag to update, as returned by `workspace.getFlags`."
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Set to true to enable the flag or false to disable it, regardless of the flag's default."
+          }
+        },
+        "additionalProperties": false
+      },
+      "V2WorkspaceUpdateFlagResponseBody": {
+        "type": "object",
+        "required": [
+          "meta",
+          "data"
+        ],
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          },
+          "data": {
+            "$ref": "#/components/schemas/EmptyResponse"
           }
         },
         "additionalProperties": false
@@ -8643,6 +8855,45 @@
         },
         "additionalProperties": false
       },
+      "RatelimitNamespace": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "createdAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier of the namespace, generated by Unkey.\n",
+            "example": "rlns_1234abcd"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the namespace, unique within your workspace.\nPass it as `namespace` to `ratelimit.limit` and the override endpoints.\n",
+            "example": "api.requests"
+          },
+          "createdAt": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "maximum": 9223372036854776000,
+            "description": "Unix timestamp in milliseconds when the namespace was created.\n",
+            "example": 1704067200000
+          },
+          "updatedAt": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "maximum": 9223372036854776000,
+            "description": "Unix timestamp in milliseconds when the namespace was last updated.\nOmitted if the namespace has never been updated.\n",
+            "example": 1704153600000,
+            "x-go-type-skip-optional-pointer": true,
+            "x-go-type-skip-optional-pointer-with-omitzero": true
+          }
+        },
+        "additionalProperties": false
+      },
       "V2RatelimitDeleteOverrideResponseData": {
         "type": "object",
         "additionalProperties": false,
@@ -8907,6 +9158,34 @@
             "description": "New root key secret, returned only once. Store it securely."
           }
         }
+      },
+      "V2WorkspaceGetFlagsFlag": {
+        "type": "object",
+        "required": [
+          "enabled",
+          "description",
+          "allowOptIn",
+          "allowOptOut"
+        ],
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether the feature is enabled for this workspace. A workspace-specific value overrides the flag's default."
+          },
+          "description": {
+            "type": "string",
+            "description": "What the flag controls."
+          },
+          "allowOptIn": {
+            "type": "boolean",
+            "description": "Whether this flag can be enabled. Updating it also requires `flags#write` permission."
+          },
+          "allowOptOut": {
+            "type": "boolean",
+            "description": "Whether this flag can be disabled. Updating it also requires `flags#write` permission."
+          }
+        },
+        "additionalProperties": false
       },
       "V2WorkspaceGetLimitsResponseData": {
         "type": "object",
@@ -21419,6 +21698,346 @@
         "x-speakeasy-name-override": "updateProject"
       }
     },
+    "/v2/ratelimit.createNamespace": {
+      "post": {
+        "description": "Create a rate limit namespace before you rate limit against it.\n\n`ratelimit.limit` also creates a namespace the first time you use its name, when your root key can create namespaces. Use this endpoint when you want the namespace to exist up front, for example to set overrides before the first request.\n\n**Important**: Names are unique within your workspace, deleted namespaces included. A name that is in use or was deleted returns 409.\n\n**Required Permissions**\n\nYour root key must have the following permission:\n- `unkey:v1:<workspace_id>:projects/*/ratelimits/namespaces/*#write`\n",
+        "operationId": "ratelimit.createNamespace",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "examples": {
+                "basic": {
+                  "description": "Create a namespace for outbound email rate limits",
+                  "summary": "Create a namespace",
+                  "value": {
+                    "name": "email.outbound"
+                  }
+                }
+              },
+              "schema": {
+                "$ref": "#/components/schemas/V2RatelimitCreateNamespaceRequestBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "success": {
+                    "description": "The created namespace",
+                    "summary": "Namespace created",
+                    "value": {
+                      "data": {
+                        "createdAt": 1704067200000,
+                        "id": "rlns_1234abcd",
+                        "name": "email.outbound"
+                      },
+                      "meta": {
+                        "requestId": "req_1234abcd"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/V2RatelimitCreateNamespaceResponseBody"
+                }
+              }
+            },
+            "description": "Namespace created successfully."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "emptyName": {
+                    "summary": "Empty name",
+                    "value": {
+                      "error": {
+                        "detail": "POST request body for '/v2/ratelimit.createNamespace' failed to validate schema",
+                        "errors": [
+                          {
+                            "location": "/properties/name/minLength",
+                            "message": "minLength: got 0, want 1"
+                          }
+                        ],
+                        "status": 400,
+                        "title": "Bad Request",
+                        "type": "https://unkey.com/docs/errors/unkey/application/invalid_input"
+                      },
+                      "meta": {
+                        "requestId": "req_1234abcd"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestErrorResponse"
+                }
+              }
+            },
+            "description": "Bad request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "missingPermission": {
+                    "summary": "Missing required permission",
+                    "value": {
+                      "error": {
+                        "detail": "Missing permission: 'unkey:v1:ws_1234abcd:projects/proj_1234abcd/ratelimits/namespaces/*#write'",
+                        "status": 403,
+                        "title": "Insufficient Permissions",
+                        "type": "https://unkey.com/docs/errors/unkey/authorization/insufficient_permissions"
+                      },
+                      "meta": {
+                        "requestId": "req_1234abcd"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "nameTaken": {
+                    "summary": "Name taken",
+                    "value": {
+                      "error": {
+                        "detail": "A namespace named 'email.outbound' already exists or was deleted in this workspace. Choose a different name.",
+                        "status": 409,
+                        "title": "Conflicting Resource",
+                        "type": "https://unkey.com/docs/errors/unkey/data/ratelimit_namespace_already_exists"
+                      },
+                      "meta": {
+                        "requestId": "req_1234abcd"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ConflictErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict - The name is in use or was deleted"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestsErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponse"
+                }
+              }
+            },
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create ratelimit namespace",
+        "tags": [
+          "ratelimit"
+        ],
+        "x-speakeasy-name-override": "createNamespace",
+        "x-unkey-idempotency": "conditionally-idempotent"
+      }
+    },
+    "/v2/ratelimit.deleteNamespace": {
+      "post": {
+        "description": "Delete a rate limit namespace and all of its overrides, identified by the namespace ID or name.\n\n**Important**: A deleted name cannot be reused. `ratelimit.limit` and `ratelimit.multiLimit` return 410 for it instead of creating a new namespace, so a deleted namespace does not turn into unlimited traffic. Other API nodes can take up to a minute to see the deletion.\n\n**Required Permissions**\n\nYour root key must have one of the following permissions:\n- `unkey:v1:<workspace_id>:projects/*/ratelimits/namespaces/*#delete` (to delete any namespace)\n- `unkey:v1:<workspace_id>:projects/<project_id>/ratelimits/namespaces/<namespace_id>#delete` (to delete a specific namespace)\n",
+        "operationId": "ratelimit.deleteNamespace",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "examples": {
+                "byId": {
+                  "summary": "Delete a namespace by ID",
+                  "value": {
+                    "namespace": "rlns_1234abcd"
+                  }
+                },
+                "byName": {
+                  "summary": "Delete a namespace by name",
+                  "value": {
+                    "namespace": "email.outbound"
+                  }
+                }
+              },
+              "schema": {
+                "$ref": "#/components/schemas/V2RatelimitDeleteNamespaceRequestBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "deleted": {
+                    "summary": "Namespace deleted",
+                    "value": {
+                      "data": {},
+                      "meta": {
+                        "requestId": "req_1234abcd"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/V2RatelimitDeleteNamespaceResponseBody"
+                }
+              }
+            },
+            "description": "Namespace and its overrides deleted."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "emptyNamespace": {
+                    "summary": "Empty namespace",
+                    "value": {
+                      "error": {
+                        "detail": "POST request body for '/v2/ratelimit.deleteNamespace' failed to validate schema",
+                        "errors": [
+                          {
+                            "location": "/properties/namespace/minLength",
+                            "message": "minLength: got 0, want 1"
+                          }
+                        ],
+                        "status": 400,
+                        "title": "Bad Request",
+                        "type": "https://unkey.com/docs/errors/unkey/application/invalid_input"
+                      },
+                      "meta": {
+                        "requestId": "req_1234abcd"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestErrorResponse"
+                }
+              }
+            },
+            "description": "Bad request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden - The root key or the workspace is disabled. A key that lacks the required permission gets 404 instead."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "namespaceNotFound": {
+                    "summary": "Namespace not found",
+                    "value": {
+                      "error": {
+                        "detail": "The requested namespace does not exist.",
+                        "status": 404,
+                        "title": "Not Found",
+                        "type": "https://unkey.com/docs/errors/unkey/data/ratelimit_namespace_not_found"
+                      },
+                      "meta": {
+                        "requestId": "req_1234abcd"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found - The namespace does not exist in your workspace, was already deleted, or your root key lacks delete access to it.\nAll cases return the same response, so a root key cannot learn which namespaces exist.\n"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestsErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponse"
+                }
+              }
+            },
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete ratelimit namespace",
+        "tags": [
+          "ratelimit"
+        ],
+        "x-speakeasy-name-override": "deleteNamespace",
+        "x-unkey-idempotency": "idempotent"
+      }
+    },
     "/v2/ratelimit.deleteOverride": {
       "post": {
         "description": "Permanently remove a rate limit override. Affected identifiers immediately revert to the namespace default.\n\nUse this to remove temporary overrides, reset identifiers to standard limits, or clean up outdated rules.\n\n**Important:** Deletion is immediate and permanent. The override cannot be recovered and must be recreated if needed again.\n\n**Permissions:** Requires `ratelimit.*.delete_override` or `ratelimit.<namespace_id>.delete_override`\n",
@@ -21892,6 +22511,203 @@
           "ratelimit"
         ],
         "x-speakeasy-name-override": "limit"
+      }
+    },
+    "/v2/ratelimit.listNamespaces": {
+      "post": {
+        "description": "Retrieve a paginated list of the rate limit namespaces in your workspace.\n\nUse this to find the namespaces your services rate limit against, for example to build an admin view or to look up a namespace ID. Results are ordered newest first and returned in pages. When `hasMore` is true, pass the returned `cursor` to fetch the next page.\n\nDeleted namespaces are not returned. The list contains only the namespaces your root key can read.\n\n**Required Permissions**\n\nYour root key must have one of the following permissions:\n- `unkey:v1:<workspace_id>:projects/*/ratelimits/namespaces/*#read` (to read any namespace)\n- `unkey:v1:<workspace_id>:projects/<project_id>/ratelimits/namespaces/<namespace_id>#read` (to read a specific namespace)\n",
+        "operationId": "ratelimit.listNamespaces",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "examples": {
+                "basic": {
+                  "description": "List the first page of namespaces in your workspace",
+                  "summary": "List all namespaces",
+                  "value": {}
+                },
+                "paginated": {
+                  "description": "Fetch a smaller page and continue from the cursor of the previous response",
+                  "summary": "Continue from a cursor",
+                  "value": {
+                    "cursor": "rlns_1234abcd",
+                    "limit": 20
+                  }
+                },
+                "search": {
+                  "description": "List namespaces whose ID or name contains the search string",
+                  "summary": "Search namespaces",
+                  "value": {
+                    "search": "api"
+                  }
+                }
+              },
+              "schema": {
+                "$ref": "#/components/schemas/V2RatelimitListNamespacesRequestBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "empty": {
+                    "description": "The workspace has no namespaces your root key can read",
+                    "summary": "No namespaces",
+                    "value": {
+                      "data": [],
+                      "meta": {
+                        "requestId": "req_9876zyxw"
+                      },
+                      "pagination": {
+                        "hasMore": false
+                      }
+                    }
+                  },
+                  "morePages": {
+                    "description": "A page with a cursor for the next page",
+                    "summary": "More namespaces available",
+                    "value": {
+                      "data": [
+                        {
+                          "createdAt": 1704240000000,
+                          "id": "rlns_5678efgh",
+                          "name": "email.sends"
+                        }
+                      ],
+                      "meta": {
+                        "requestId": "req_5678efgh"
+                      },
+                      "pagination": {
+                        "cursor": "rlns_1234abcd",
+                        "hasMore": true
+                      }
+                    }
+                  },
+                  "namespaceList": {
+                    "description": "The last page of namespaces in a workspace",
+                    "summary": "Namespace list",
+                    "value": {
+                      "data": [
+                        {
+                          "createdAt": 1704240000000,
+                          "id": "rlns_5678efgh",
+                          "name": "email.sends"
+                        },
+                        {
+                          "createdAt": 1704067200000,
+                          "id": "rlns_1234abcd",
+                          "name": "api.requests",
+                          "updatedAt": 1704153600000
+                        }
+                      ],
+                      "meta": {
+                        "requestId": "req_1234abcd"
+                      },
+                      "pagination": {
+                        "hasMore": false
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/V2RatelimitListNamespacesResponseBody"
+                }
+              }
+            },
+            "description": "Successfully retrieved a page of namespaces. Use the pagination cursor for additional results when `hasMore: true`.\n"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "invalidLimit": {
+                    "summary": "Invalid limit",
+                    "value": {
+                      "error": {
+                        "detail": "One or more fields failed validation",
+                        "errors": [
+                          {
+                            "fix": "Use a limit between 1 and 100",
+                            "location": "body.limit",
+                            "message": "must be less than or equal to 100"
+                          }
+                        ],
+                        "status": 400,
+                        "title": "Bad Request",
+                        "type": "https://unkey.com/docs/errors/unkey/application/invalid_input"
+                      },
+                      "meta": {
+                        "requestId": "req_1234abcd"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestErrorResponse"
+                }
+              }
+            },
+            "description": "Bad request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestsErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponse"
+                }
+              }
+            },
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List ratelimit namespaces",
+        "tags": [
+          "ratelimit"
+        ],
+        "x-speakeasy-name-override": "listNamespaces",
+        "x-speakeasy-pagination": {
+          "inputs": [
+            {
+              "in": "requestBody",
+              "name": "cursor",
+              "type": "cursor"
+            }
+          ],
+          "outputs": {
+            "nextCursor": "$.pagination.cursor"
+          },
+          "type": "cursor"
+        },
+        "x-unkey-idempotency": "idempotent"
       }
     },
     "/v2/ratelimit.listOverrides": {
@@ -22440,6 +23256,203 @@
         "x-speakeasy-name-override": "setOverride"
       }
     },
+    "/v2/ratelimit.updateNamespace": {
+      "post": {
+        "description": "Rename a rate limit namespace, identified by its ID or current name.\n\nRenaming to the current name returns the namespace without a write.\n\n**Important**: Overrides stay with the namespace. Requests that pass the namespace by name, such as `ratelimit.limit`, must use the new name. A `ratelimit.limit` call with the old name can create a new, empty namespace with that name. A name that is in use or was deleted returns 409. Other API nodes can take up to a minute to see the new name.\n\n**Required Permissions**\n\nYour root key must have one of the following permissions:\n- `unkey:v1:<workspace_id>:projects/*/ratelimits/namespaces/*#write` (to rename any namespace)\n- `unkey:v1:<workspace_id>:projects/<project_id>/ratelimits/namespaces/<namespace_id>#write` (to rename a specific namespace)\n",
+        "operationId": "ratelimit.updateNamespace",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "examples": {
+                "renameById": {
+                  "description": "Locate the namespace by its ID and give it a new name",
+                  "summary": "Rename a namespace by ID",
+                  "value": {
+                    "name": "email.outbound",
+                    "namespace": "rlns_1234abcd"
+                  }
+                },
+                "renameByName": {
+                  "description": "Locate the namespace by its current name and give it a new name",
+                  "summary": "Rename a namespace by its current name",
+                  "value": {
+                    "name": "email.outbound",
+                    "namespace": "email.sends"
+                  }
+                }
+              },
+              "schema": {
+                "$ref": "#/components/schemas/V2RatelimitUpdateNamespaceRequestBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "renamed": {
+                    "summary": "Renamed namespace",
+                    "value": {
+                      "data": {
+                        "createdAt": 1704067200000,
+                        "id": "rlns_1234abcd",
+                        "name": "email.outbound",
+                        "updatedAt": 1704153600000
+                      },
+                      "meta": {
+                        "requestId": "req_1234abcd"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/V2RatelimitUpdateNamespaceResponseBody"
+                }
+              }
+            },
+            "description": "Namespace renamed successfully."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "emptyName": {
+                    "summary": "Empty name",
+                    "value": {
+                      "error": {
+                        "detail": "POST request body for '/v2/ratelimit.updateNamespace' failed to validate schema",
+                        "errors": [
+                          {
+                            "location": "/properties/name/minLength",
+                            "message": "minLength: got 0, want 1"
+                          }
+                        ],
+                        "status": 400,
+                        "title": "Bad Request",
+                        "type": "https://unkey.com/docs/errors/unkey/application/invalid_input"
+                      },
+                      "meta": {
+                        "requestId": "req_1234abcd"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestErrorResponse"
+                }
+              }
+            },
+            "description": "Bad request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden - The root key or the workspace is disabled. A key that lacks the required permission gets 404 instead."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "namespaceNotFound": {
+                    "summary": "Namespace not found",
+                    "value": {
+                      "error": {
+                        "detail": "The requested namespace does not exist.",
+                        "status": 404,
+                        "title": "Not Found",
+                        "type": "https://unkey.com/docs/errors/unkey/data/ratelimit_namespace_not_found"
+                      },
+                      "meta": {
+                        "requestId": "req_1234abcd"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found - The namespace does not exist in your workspace, was deleted, or your root key lacks write access to it.\nAll cases return the same response, so a root key cannot learn which namespaces exist.\n"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "nameTaken": {
+                    "summary": "Name taken",
+                    "value": {
+                      "error": {
+                        "detail": "A namespace named 'email.outbound' already exists or was deleted in this workspace. Choose a different name.",
+                        "status": 409,
+                        "title": "Conflicting Resource",
+                        "type": "https://unkey.com/docs/errors/unkey/data/ratelimit_namespace_already_exists"
+                      },
+                      "meta": {
+                        "requestId": "req_1234abcd"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ConflictErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict - The name is in use or was deleted"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestsErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponse"
+                }
+              }
+            },
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update ratelimit namespace",
+        "tags": [
+          "ratelimit"
+        ],
+        "x-speakeasy-name-override": "updateNamespace",
+        "x-unkey-idempotency": "idempotent"
+      }
+    },
     "/v2/rootKeys.createKey": {
       "post": {
         "description": "Creates a root key for the authenticated workspace.\nRequires `unkey:v1:<workspace_id>:rootKeys/*#write`.\nThe created root key cannot have more permissions than the caller.\n",
@@ -22896,6 +23909,110 @@
           "rootKeys"
         ],
         "x-speakeasy-name-override": "updateKey"
+      }
+    },
+    "/v2/workspace.getFlags": {
+      "post": {
+        "description": "Get feature flags for the workspace associated with your credentials.\n\nEach flag is keyed by its slug and includes its current value, description,\nand whether it can be enabled or disabled. A workspace-specific value takes\nprecedence over the flag's default. If no flags are available, `data` is an\nempty object.\n\nThis endpoint takes no request body.\n**Required Permissions**\n\nYour root key must have the following permission:\n- `unkey:v1:<workspace_id>:flags#read`\n",
+        "operationId": "workspace.getFlags",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "empty": {
+                    "value": {
+                      "data": {},
+                      "meta": {
+                        "requestId": "req_1234abcd"
+                      }
+                    }
+                  },
+                  "flags": {
+                    "value": {
+                      "data": {
+                        "projects_nav": {
+                          "allowOptIn": true,
+                          "allowOptOut": false,
+                          "description": "Preview project navigation.",
+                          "enabled": true
+                        }
+                      },
+                      "meta": {
+                        "requestId": "req_1234abcd"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/V2WorkspaceGetFlagsResponseBody"
+                }
+              }
+            },
+            "description": "Workspace flags keyed by slug, or an empty object when no flags are available."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestErrorResponse"
+                }
+              }
+            },
+            "description": "Bad request, including a missing Authorization header."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden - Requires `unkey:v1:<workspace_id>:flags#read`."
+          },
+          "429": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestsErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponse"
+                }
+              }
+            },
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get workspace flags",
+        "tags": [
+          "workspace"
+        ],
+        "x-speakeasy-name-override": "getFlags",
+        "x-unkey-idempotency": "idempotent"
       }
     },
     "/v2/workspace.getLimits": {
@@ -23587,6 +24704,105 @@
           "workspace"
         ],
         "x-speakeasy-name-override": "getUsage",
+        "x-unkey-idempotency": "idempotent"
+      }
+    },
+    "/v2/workspace.updateFlag": {
+      "post": {
+        "description": "Enable or disable a flag for your workspace. Use `workspace.getFlags` to\nfind flag slugs and check whether they can be enabled or disabled.\n\n**Required Permissions**\n\nYour root key must have the following permission:\n- `unkey:v1:<workspace_id>:flags#write`\n",
+        "operationId": "workspace.updateFlag",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/V2WorkspaceUpdateFlagRequestBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V2WorkspaceUpdateFlagResponseBody"
+                }
+              }
+            },
+            "description": "Flag updated successfully. The data object is empty."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid request."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResponse"
+                }
+              }
+            },
+            "description": "Missing write permission, or the flag cannot be enabled or disabled as requested."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundErrorResponse"
+                }
+              }
+            },
+            "description": "No flag exists with the supplied slug."
+          },
+          "429": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestsErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests."
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponse"
+                }
+              }
+            },
+            "description": "Internal server error."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a workspace flag",
+        "tags": [
+          "workspace"
+        ],
+        "x-speakeasy-name-override": "updateFlag",
         "x-unkey-idempotency": "idempotent"
       }
     },
