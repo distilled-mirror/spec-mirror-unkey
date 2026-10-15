@@ -130,6 +130,7 @@
 - [rate_limited](https://unkey.com/docs/errors/frontline/client/rate_limited.md): The request exceeded a per-key limit or a gateway rate limit policy.
 - [usage_exceeded](https://unkey.com/docs/errors/frontline/client/usage_exceeded.md): The gateway rejected the request because the key has no credits left.
 - [invalid_configuration](https://unkey.com/docs/errors/frontline/config/invalid_configuration.md): The deployment's gateway policy configuration could not be parsed or has an invalid value.
+- [ratelimit_not_configured](https://unkey.com/docs/errors/frontline/config/ratelimit_not_configured.md): A gateway policy references a named rate limit that is not configured for the key or its identity.
 - [config_load_failed](https://unkey.com/docs/errors/frontline/platform/config_load_failed.md): Unkey's gateway failed on our side while loading the configuration it needs to route the request.
 - [deployment_selection_failed](https://unkey.com/docs/errors/frontline/platform/deployment_selection_failed.md): A reserved gateway code that no request returns.
 - [internal_server_error](https://unkey.com/docs/errors/frontline/platform/internal_server_error.md): Unkey's gateway failed on our side while handling the request.
@@ -214,6 +215,13 @@
 - [Set ratelimit override](https://unkey.com/docs/platform/api-reference/ratelimit/set-ratelimit-override.md): Create or update a custom rate limit for specific identifiers, bypassing the namespace default.
 - [Query rate limit data](https://unkey.com/docs/platform/api-reference/analytics/query-rate-limit-data.md): Queries may reference only the five public rate limit analytics aliases: `ratelimits_v1`, `ratelimits_per_minute_v1`, `ratelimits_per_hour_v1`, `ratelimits_per_day_v1`, or `ratelimits_per_month_v1`. CTEs, subqueries, UNION, and EXCEPT are supported. Queries are always restricted to the authenticated…
 - [Query key verification data](https://unkey.com/docs/platform/api-reference/analytics/query-key-verification-data.md): Execute custom SQL queries against your key verification analytics. CTEs, subqueries, UNION, and EXCEPT are supported. Queries must use one of the five public aliases: `key_verifications_v1`, `key_verifications_per_minute_v1`, `key_verifications_per_hour_v1`, `key_verifications_per_day_v1`, or `key_…
+- [Create portal](https://unkey.com/docs/platform/api-reference/portal/create-portal.md): Create a portal for one app or keyspace in your workspace.
+- [Get portal](https://unkey.com/docs/platform/api-reference/portal/get-portal.md): Read one portal, by its id or slug, or by the resource it serves.
+- [Update portal](https://unkey.com/docs/platform/api-reference/portal/update-portal.md): Change a portal's slug, display name, the resource it serves, its enabled state, or its branding.
+- [Delete portal](https://unkey.com/docs/platform/api-reference/portal/delete-portal.md): Delete a portal and revoke the sessions it minted.
+- [Create portal session](https://unkey.com/docs/platform/api-reference/portal/create-portal-session.md): Create a portal session for an end user and get the URL to redirect them to.
+- [List portal sessions](https://unkey.com/docs/platform/api-reference/portal/list-portal-sessions.md): List the end users holding a revocable session on a portal, with each end user's sessions.
+- [Revoke portal sessions](https://unkey.com/docs/platform/api-reference/portal/revoke-portal-sessions.md): Revoke every live session an end user holds on a portal.
 - [Compute](https://unkey.com/docs/compute/index.md): Build, deploy, and run your app on Unkey, with or without API Management.
 - [Deploy from GitHub](https://unkey.com/docs/compute/get-started/deploy-from-github.md): Connect a repository and get your first deployment live on an unkey.app domain.
 - [Deploy a container image](https://unkey.com/docs/compute/get-started/deploy-an-image.md): Deploy an image you built yourself, from the dashboard or the CLI.
@@ -465,6 +473,13 @@
 - [Set ratelimit override](https://unkey.com/docs/api-management/api-reference/ratelimit/set-ratelimit-override.md): Create or update a custom rate limit for specific identifiers, bypassing the namespace default.
 - [Query rate limit data](https://unkey.com/docs/api-management/api-reference/analytics/query-rate-limit-data.md): Queries may reference only the five public rate limit analytics aliases: `ratelimits_v1`, `ratelimits_per_minute_v1`, `ratelimits_per_hour_v1`, `ratelimits_per_day_v1`, or `ratelimits_per_month_v1`. CTEs, subqueries, UNION, and EXCEPT are supported. Queries are always restricted to the authenticated…
 - [Query key verification data](https://unkey.com/docs/api-management/api-reference/analytics/query-key-verification-data.md): Execute custom SQL queries against your key verification analytics. CTEs, subqueries, UNION, and EXCEPT are supported. Queries must use one of the five public aliases: `key_verifications_v1`, `key_verifications_per_minute_v1`, `key_verifications_per_hour_v1`, `key_verifications_per_day_v1`, or `key_…
+- [Create portal](https://unkey.com/docs/api-management/api-reference/portal/create-portal.md): Create a portal for one app or keyspace in your workspace.
+- [Get portal](https://unkey.com/docs/api-management/api-reference/portal/get-portal.md): Read one portal, by its id or slug, or by the resource it serves.
+- [Update portal](https://unkey.com/docs/api-management/api-reference/portal/update-portal.md): Change a portal's slug, display name, the resource it serves, its enabled state, or its branding.
+- [Delete portal](https://unkey.com/docs/api-management/api-reference/portal/delete-portal.md): Delete a portal and revoke the sessions it minted.
+- [Create portal session](https://unkey.com/docs/api-management/api-reference/portal/create-portal-session.md): Create a portal session for an end user and get the URL to redirect them to.
+- [List portal sessions](https://unkey.com/docs/api-management/api-reference/portal/list-portal-sessions.md): List the end users holding a revocable session on a portal, with each end user's sessions.
+- [Revoke portal sessions](https://unkey.com/docs/api-management/api-reference/portal/revoke-portal-sessions.md): Revoke every live session an end user holds on a portal.
 - [SDKs](https://unkey.com/docs/api-management/sdks/overview.md): Official libraries for TypeScript, Go, and Python, plus a community Nuxt module.
 - [Go SDK](https://unkey.com/docs/api-management/sdks/go.md): Manage keys, rate limits, and deployments from Go with the v3 client.
 - [Python SDK](https://unkey.com/docs/api-management/sdks/python.md): Manage keys and rate limits from Python with unkey.py.

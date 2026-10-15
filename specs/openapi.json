@@ -19816,7 +19816,6 @@
         "tags": [
           "portal"
         ],
-        "x-excluded": true,
         "x-speakeasy-name-override": "createPortal"
       }
     },
@@ -19943,7 +19942,6 @@
         "tags": [
           "portal"
         ],
-        "x-excluded": true,
         "x-speakeasy-name-override": "createSession"
       }
     },
@@ -20032,7 +20030,6 @@
         "tags": [
           "portal"
         ],
-        "x-excluded": true,
         "x-speakeasy-name-override": "deletePortal"
       }
     },
@@ -20214,7 +20211,6 @@
         "tags": [
           "portal"
         ],
-        "x-excluded": true,
         "x-speakeasy-name-override": "getPortal"
       }
     },
@@ -20524,7 +20520,6 @@
         "tags": [
           "portal"
         ],
-        "x-excluded": true,
         "x-speakeasy-name-override": "listSessions"
       }
     },
@@ -20712,7 +20707,6 @@
         "tags": [
           "portal"
         ],
-        "x-excluded": true,
         "x-speakeasy-name-override": "revokeSession"
       }
     },
@@ -20811,7 +20805,6 @@
         "tags": [
           "portal"
         ],
-        "x-excluded": true,
         "x-speakeasy-name-override": "updatePortal"
       }
     },
