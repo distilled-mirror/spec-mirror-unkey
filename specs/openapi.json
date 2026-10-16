@@ -7349,10 +7349,7 @@
           },
           "present": {
             "type": "boolean",
-            "enum": [
-              true
-            ],
-            "description": "Matches when the field is present, regardless of value."
+            "description": "Matches when the field is present if true, or absent if false, regardless of value."
           },
           "value": {
             "$ref": "#/components/schemas/StringMatch"
@@ -16056,7 +16053,7 @@
                 }
               }
             },
-            "description": ""
+            "description": "Identity created successfully."
           },
           "400": {
             "content": {
@@ -18289,7 +18286,7 @@
                 }
               }
             },
-            "description": ""
+            "description": "Service is in a degraded state. Some functionality may be limited."
           },
           "500": {
             "content": {
