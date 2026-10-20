@@ -50,6 +50,8 @@
 - [deployment_is_production](https://www.unkey.com/docs/errors/unkey/application/deployment_is_production.md): Production deployments cannot be stopped or started directly.
 - [deployment_is_stopping](https://www.unkey.com/docs/errors/unkey/application/deployment_is_stopping.md): A stop is already in progress for this deployment.
 - [deployment_no_current](https://www.unkey.com/docs/errors/unkey/application/deployment_no_current.md): The app has no current deployment, so there is nothing to promote or roll back from.
+- [deployment_not_awaiting_approval](https://www.unkey.com/docs/errors/unkey/application/deployment_not_awaiting_approval.md): The deployment is not waiting for approval, so there is nothing to authorize.
+- [deployment_not_in_progress](https://www.unkey.com/docs/errors/unkey/application/deployment_not_in_progress.md): The deployment already finished, so there is nothing to cancel.
 - [deployment_not_production](https://www.unkey.com/docs/errors/unkey/application/deployment_not_production.md): Only production deployments can be promoted or rolled back to.
 - [deployment_not_ready](https://www.unkey.com/docs/errors/unkey/application/deployment_not_ready.md): The deployment to promote or roll back to is not ready to serve traffic.
 - [deployment_not_running](https://www.unkey.com/docs/errors/unkey/application/deployment_not_running.md): The deployment is not running, so there is nothing to stop.

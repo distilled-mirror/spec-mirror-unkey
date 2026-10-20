@@ -792,6 +792,64 @@
           }
         }
       },
+      "V2DeploymentsAuthorizeDeploymentRequestBody": {
+        "type": "object",
+        "required": [
+          "deploymentId"
+        ],
+        "properties": {
+          "deploymentId": {
+            "$ref": "#/components/schemas/ResourceIdentifier"
+          }
+        },
+        "additionalProperties": false
+      },
+      "V2DeploymentsAuthorizeDeploymentResponseBody": {
+        "description": "Authorize a deployment that is awaiting approval.",
+        "type": "object",
+        "required": [
+          "meta",
+          "data"
+        ],
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          },
+          "data": {
+            "$ref": "#/components/schemas/EmptyResponse"
+          }
+        },
+        "additionalProperties": false
+      },
+      "V2DeploymentsCancelDeploymentRequestBody": {
+        "type": "object",
+        "required": [
+          "deploymentId"
+        ],
+        "properties": {
+          "deploymentId": {
+            "$ref": "#/components/schemas/ResourceIdentifier"
+          }
+        },
+        "additionalProperties": false
+      },
+      "V2DeploymentsCancelDeploymentResponseBody": {
+        "description": "Cancel a deployment that is still in progress.",
+        "type": "object",
+        "required": [
+          "meta",
+          "data"
+        ],
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          },
+          "data": {
+            "$ref": "#/components/schemas/EmptyResponse"
+          }
+        },
+        "additionalProperties": false
+      },
       "V2DeploymentsCreateDeploymentRequestBody": {
         "type": "object",
         "required": [
@@ -4568,7 +4626,7 @@
       },
       "V2RatelimitMultiLimitRequestBody": {
         "type": "array",
-        "description": "Array of rate limit checks to perform",
+        "description": "Array of rate limit checks to perform. Each check must have a different combination of namespace, identifier and duration. A repeated combination returns a 400 error with `invalid_input` before any namespace is created.",
         "minItems": 1,
         "maxItems": 100,
         "items": {
@@ -11695,6 +11753,352 @@
         ],
         "x-speakeasy-group": "internal",
         "x-speakeasy-name-override": "getDeployment"
+      }
+    },
+    "/v2/deployments.authorizeDeployment": {
+      "post": {
+        "description": "Authorize a deployment that is awaiting approval. Deployments from forked\npull requests run code from outside your repository, so they wait for a\nproject member to approve them before they build.\n\nThe deployment must have the status `awaiting_approval`. Authorization is\nasynchronous: this endpoint only enqueues it and returns immediately. The\ndeployment then moves to `pending` and starts its build. Poll\n`getDeployment` to follow its status. If the build cannot start, the\ndeployment returns to `awaiting_approval`.\n\n**Required Permissions**\n\nYour root key must have the following permission:\n- `unkey:v1:<workspace_id>:projects/<project_id>/apps/<app_id>/environments/<environment_id>/deployments/<deployment_id>#write`\n",
+        "operationId": "deployments.authorizeDeployment",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "examples": {
+                "authorize": {
+                  "description": "Approve a deployment that is waiting for a project member",
+                  "summary": "Authorize a fork pull request deployment",
+                  "value": {
+                    "deploymentId": "d_1234abcd"
+                  }
+                }
+              },
+              "schema": {
+                "$ref": "#/components/schemas/V2DeploymentsAuthorizeDeploymentRequestBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "accepted": {
+                    "summary": "Build enqueued",
+                    "value": {
+                      "data": {},
+                      "meta": {
+                        "requestId": "req_1234abcd"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/V2DeploymentsAuthorizeDeploymentResponseBody"
+                }
+              }
+            },
+            "description": "Authorization accepted and enqueued. The deployment moves to `pending`\nand builds asynchronously; poll `getDeployment` to observe its status.\n"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "missingDeploymentId": {
+                    "summary": "Missing deploymentId",
+                    "value": {
+                      "error": {
+                        "detail": "POST request body for '/v2/deployments.authorizeDeployment' failed to validate schema",
+                        "errors": [
+                          {
+                            "location": "/required",
+                            "message": "missing property 'deploymentId'"
+                          }
+                        ],
+                        "status": 400,
+                        "title": "Bad Request",
+                        "type": "https://unkey.com/docs/errors/unkey/application/invalid_input"
+                      },
+                      "meta": {
+                        "requestId": "req_1234abcd"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestErrorResponse"
+                }
+              }
+            },
+            "description": "Bad request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "notFound": {
+                    "summary": "Deployment not found",
+                    "value": {
+                      "error": {
+                        "detail": "The requested deployment does not exist.",
+                        "status": 404,
+                        "title": "Not Found",
+                        "type": "https://unkey.com/docs/errors/unkey/data/deployment_not_found"
+                      },
+                      "meta": {
+                        "requestId": "req_1234abcd"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found - The deployment does not exist in your workspace, or your\nroot key cannot write to it. Both cases return the same response, so\ndeployment existence is never revealed.\n"
+          },
+          "412": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "notAwaitingApproval": {
+                    "summary": "Deployment is not awaiting approval",
+                    "value": {
+                      "error": {
+                        "detail": "The deployment is not awaiting approval. Its status is building.",
+                        "status": 412,
+                        "title": "Precondition Failed",
+                        "type": "https://unkey.com/docs/errors/unkey/application/deployment_not_awaiting_approval"
+                      },
+                      "meta": {
+                        "requestId": "req_1234abcd"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/PreconditionFailedErrorResponse"
+                }
+              }
+            },
+            "description": "Precondition failed - The deployment is not awaiting approval, or the\nworkspace has no Compute plan or is paused at its spend limit.\n"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestsErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponse"
+                }
+              }
+            },
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Authorize deployment",
+        "tags": [
+          "deployments"
+        ],
+        "x-speakeasy-name-override": "authorizeDeployment",
+        "x-unkey-idempotency": "conditionally-idempotent"
+      }
+    },
+    "/v2/deployments.cancelDeployment": {
+      "post": {
+        "description": "Cancel a deployment that has not finished yet: queued, waiting for\napproval, building, or deploying. Cancelling aborts its run and marks it\n`cancelled`.\n\nOnly in-progress deployments can be cancelled. To take a `ready` preview\ndeployment offline, use `stopDeployment` instead.\n\nCancellation is asynchronous: this endpoint only enqueues it and returns\nimmediately. Poll `getDeployment` until the status reaches `cancelled`.\n\n**Required Permissions**\n\nYour root key must have the following permission:\n- `unkey:v1:<workspace_id>:projects/<project_id>/apps/<app_id>/environments/<environment_id>/deployments/<deployment_id>#write`\n",
+        "operationId": "deployments.cancelDeployment",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "examples": {
+                "cancel": {
+                  "description": "Abort a deployment whose build is still running",
+                  "summary": "Cancel a building deployment",
+                  "value": {
+                    "deploymentId": "d_1234abcd"
+                  }
+                }
+              },
+              "schema": {
+                "$ref": "#/components/schemas/V2DeploymentsCancelDeploymentRequestBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "accepted": {
+                    "summary": "Cancellation enqueued",
+                    "value": {
+                      "data": {},
+                      "meta": {
+                        "requestId": "req_1234abcd"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/V2DeploymentsCancelDeploymentResponseBody"
+                }
+              }
+            },
+            "description": "Cancellation accepted and enqueued. The deployment moves to\n`cancelled` asynchronously; poll `getDeployment` to observe it.\n"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "missingDeploymentId": {
+                    "summary": "Missing deploymentId",
+                    "value": {
+                      "error": {
+                        "detail": "POST request body for '/v2/deployments.cancelDeployment' failed to validate schema",
+                        "errors": [
+                          {
+                            "location": "/required",
+                            "message": "missing property 'deploymentId'"
+                          }
+                        ],
+                        "status": 400,
+                        "title": "Bad Request",
+                        "type": "https://unkey.com/docs/errors/unkey/application/invalid_input"
+                      },
+                      "meta": {
+                        "requestId": "req_1234abcd"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestErrorResponse"
+                }
+              }
+            },
+            "description": "Bad request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "notFound": {
+                    "summary": "Deployment not found",
+                    "value": {
+                      "error": {
+                        "detail": "The requested deployment does not exist.",
+                        "status": 404,
+                        "title": "Not Found",
+                        "type": "https://unkey.com/docs/errors/unkey/data/deployment_not_found"
+                      },
+                      "meta": {
+                        "requestId": "req_1234abcd"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found - The deployment does not exist in your workspace, or your\nroot key cannot write to it. Both cases return the same response, so\ndeployment existence is never revealed.\n"
+          },
+          "412": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "notInProgress": {
+                    "summary": "Deployment already finished",
+                    "value": {
+                      "error": {
+                        "detail": "The deployment is not in progress. Its status is ready.",
+                        "status": 412,
+                        "title": "Precondition Failed",
+                        "type": "https://unkey.com/docs/errors/unkey/application/deployment_not_in_progress"
+                      },
+                      "meta": {
+                        "requestId": "req_1234abcd"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/PreconditionFailedErrorResponse"
+                }
+              }
+            },
+            "description": "Precondition failed - The deployment already finished, so there is\nnothing to cancel.\n"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooManyRequestsErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponse"
+                }
+              }
+            },
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Cancel deployment",
+        "tags": [
+          "deployments"
+        ],
+        "x-speakeasy-name-override": "cancelDeployment",
+        "x-unkey-idempotency": "conditionally-idempotent"
       }
     },
     "/v2/deployments.createDeployment": {
