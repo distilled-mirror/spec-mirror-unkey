@@ -31,27 +31,27 @@ Put a root key in the `Authorization: Bearer` header. See [API authentication](/
 
 Every response is a JSON object with `meta`. A success adds `data`, and a failure adds `error` instead.
 
-<ResponseField name="meta" type="object" required>
-  Present on every response.
+**meta** `object` *required*
 
-  <Expandable title="properties">
-    <ResponseField name="requestId" type="string" required>
-      A unique ID for this request, prefixed `req_`. It's the only field in `meta`, and it isn't sent as a response header. Log it with every call and include it when you contact support, so we can find the exact request.
-    </ResponseField>
-  </Expandable>
-</ResponseField>
+Present on every response.
 
-<ResponseField name="data" type="object | array">
-  The endpoint's result. Its shape is documented per endpoint in each product's API reference. List endpoints return an array here.
-</ResponseField>
+**properties**
 
-<ResponseField name="error" type="object">
-  Present instead of `data` when the request failed. Its fields are on [API error envelope](/docs/platform/api/errors).
-</ResponseField>
+**requestId** `string` *required*
 
-<ResponseField name="pagination" type="object">
-  Present only on list endpoints. See [Page through lists](#page-through-lists).
-</ResponseField>
+A unique ID for this request, prefixed `req_`. It's the only field in `meta`, and it isn't sent as a response header. Log it with every call and include it when you contact support, so we can find the exact request.
+
+**data** `object | array`
+
+The endpoint's result. Its shape is documented per endpoint in each product's API reference. List endpoints return an array here.
+
+**error** `object`
+
+Present instead of `data` when the request failed. Its fields are on [API error envelope](/docs/platform/api/errors).
+
+**pagination** `object`
+
+Present only on list endpoints. See [Page through lists](#page-through-lists).
 
 ```json A successful response theme={"system"}
 {
@@ -64,51 +64,49 @@ Every response is a JSON object with `meta`. A success adds `data`, and a failur
 
 List endpoints use a cursor instead of page numbers. Each request takes an optional `limit` and `cursor`, and each response has a `pagination` object next to `data`. The example uses `apis.listKeys`, but every list endpoint works the same way.
 
-<ParamField body="limit" type="integer">
-  Maximum items to return. For `apis.listKeys` it's 1 to 100, default 100. Most list endpoints default to 100, but `ratelimit.listOverrides` defaults to 50. Send `limit` if the page size matters to you.
-</ParamField>
+**limit** `integer`
 
-<ParamField body="cursor" type="string">
-  The `pagination.cursor` value from the previous response, sent back unchanged. Leave it out for the first page. Cursors can expire, so don't store them long term or build them yourself.
-</ParamField>
+Maximum items to return. For `apis.listKeys` it's 1 to 100, default 100. Most list endpoints default to 100, but `ratelimit.listOverrides` defaults to 50. Send `limit` if the page size matters to you.
 
-<ResponseField name="pagination.hasMore" type="boolean" required>
-  `true` when there's another page. When `false`, you have everything and `cursor` may be missing or `null`.
-</ResponseField>
+**cursor** `string`
 
-<ResponseField name="pagination.cursor" type="string">
-  The value to send as `cursor` on the next request. Only use it while `hasMore` is `true`.
-</ResponseField>
+The `pagination.cursor` value from the previous response, sent back unchanged. Leave it out for the first page. Cursors can expire, so don't store them long term or build them yourself.
 
-<Steps titleSize="h3">
-  <Step title="Request the first page">
-    ```bash theme={"system"}
-    curl -X POST https://api.unkey.com/v2/apis.listKeys \
-      -H "Authorization: Bearer <root key>" \
-      -H "Content-Type: application/json" \
-      -d '{"apiId": "api_1234abcd", "limit": 50}'
-    ```
-  </Step>
+**pagination.hasMore** `boolean` *required*
 
-  <Step title="Read the cursor">
-    ```json theme={"system"}
-    {
-      "meta": { "requestId": "req_5678efgh" },
-      "data": [ { "keyId": "key_1111aaaa" }, { "keyId": "key_2222bbbb" } ],
-      "pagination": { "cursor": "key_3333cccc", "hasMore": true }
-    }
-    ```
-  </Step>
+`true` when there's another page. When `false`, you have everything and `cursor` may be missing or `null`.
 
-  <Step title="Send it back until hasMore is false">
-    ```bash theme={"system"}
-    curl -X POST https://api.unkey.com/v2/apis.listKeys \
-      -H "Authorization: Bearer <root key>" \
-      -H "Content-Type: application/json" \
-      -d '{"apiId": "api_1234abcd", "limit": 50, "cursor": "key_3333cccc"}'
-    ```
-  </Step>
-</Steps>
+**pagination.cursor** `string`
+
+The value to send as `cursor` on the next request. Only use it while `hasMore` is `true`.
+
+### 1. Request the first page
+
+```bash theme={"system"}
+curl -X POST https://api.unkey.com/v2/apis.listKeys \
+  -H "Authorization: Bearer <root key>" \
+  -H "Content-Type: application/json" \
+  -d '{"apiId": "api_1234abcd", "limit": 50}'
+```
+
+### 2. Read the cursor
+
+```json theme={"system"}
+{
+  "meta": { "requestId": "req_5678efgh" },
+  "data": [ { "keyId": "key_1111aaaa" }, { "keyId": "key_2222bbbb" } ],
+  "pagination": { "cursor": "key_3333cccc", "hasMore": true }
+}
+```
+
+### 3. Send it back until hasMore is false
+
+```bash theme={"system"}
+curl -X POST https://api.unkey.com/v2/apis.listKeys \
+  -H "Authorization: Bearer <root key>" \
+  -H "Content-Type: application/json" \
+  -d '{"apiId": "api_1234abcd", "limit": 50, "cursor": "key_3333cccc"}'
+```
 
 Keep the other request fields the same on every page. If you change a filter partway through, the cursor no longer works.
 

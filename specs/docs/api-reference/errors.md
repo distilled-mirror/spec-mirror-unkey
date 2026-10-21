@@ -28,39 +28,39 @@ When a request fails, the response has an `error` object instead of `data`. Ever
 
 ## Fields
 
-<ResponseField name="title" type="string" required>
-  A short summary, for example `Not Found` or `Insufficient Permissions`. It doesn't change for a given problem, but match on `type` in code.
-</ResponseField>
+**title** `string` *required*
 
-<ResponseField name="detail" type="string" required>
-  A plain explanation of what went wrong, written to help a developer fix it. It can name the field, resource, or permission involved. Don't parse it, because the wording can change.
-</ResponseField>
+A short summary, for example `Not Found` or `Insufficient Permissions`. It doesn't change for a given problem, but match on `type` in code.
 
-<ResponseField name="status" type="integer" required>
-  The HTTP status code, repeated in the body.
-</ResponseField>
+**detail** `string` *required*
 
-<ResponseField name="type" type="string" required>
-  A URL that identifies the error and links to its page. The last three path segments are the error code, `err:{system}:{category}:{specific}`. Match on this field to handle a specific error. Error pages on this site shorten it to the path, but the API always sends the full URL.
-</ResponseField>
+A plain explanation of what went wrong, written to help a developer fix it. It can name the field, resource, or permission involved. Don't parse it, because the wording can change.
 
-<ResponseField name="errors" type="array">
-  Sent with 400, 408, 413, and 499 responses. When the request fails validation, it has one entry per problem, so you can fix them all at once. Otherwise it's an empty array.
+**status** `integer` *required*
 
-  <Expandable title="properties">
-    <ResponseField name="location" type="string" required>
-      A JSON path to the part of the request with the problem, such as `body.permissions[0].name` or `body.limit`.
-    </ResponseField>
+The HTTP status code, repeated in the body.
 
-    <ResponseField name="message" type="string" required>
-      Which validation rule failed.
-    </ResponseField>
+**type** `string` *required*
 
-    <ResponseField name="fix" type="string">
-      A suggestion for satisfying the rule. Not every validation error carries one.
-    </ResponseField>
-  </Expandable>
-</ResponseField>
+A URL that identifies the error and links to its page. The last three path segments are the error code, `err:{system}:{category}:{specific}`. Match on this field to handle a specific error. Error pages on this site shorten it to the path, but the API always sends the full URL.
+
+**errors** `array`
+
+Sent with 400, 408, 413, and 499 responses. When the request fails validation, it has one entry per problem, so you can fix them all at once. Otherwise it's an empty array.
+
+**properties**
+
+**location** `string` *required*
+
+A JSON path to the part of the request with the problem, such as `body.permissions[0].name` or `body.limit`.
+
+**message** `string` *required*
+
+Which validation rule failed.
+
+**fix** `string`
+
+A suggestion for satisfying the rule. Not every validation error carries one.
 
 ## Status codes
 

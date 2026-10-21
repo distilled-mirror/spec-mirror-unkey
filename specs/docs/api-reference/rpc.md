@@ -36,14 +36,14 @@ Almost every procedure is under `/v2`. A procedure gets a new version prefix whe
 | `keys` | API Management | Creating, verifying, updating, rerolling, and deleting API keys, and their permissions and roles. |
 | `identities` | API Management | Identities shared by several keys. |
 | `permissions` | API Management | Permissions and roles you define for your keys. |
-| `ratelimit` | API Management | The standalone <Tooltip tip="Here: the standalone ratelimit API you call with your own identifier. Not a key's limit and not the gateway policy.">rate limiting</Tooltip> service and its overrides. Singular, not `ratelimits`. |
+| `ratelimit` | API Management | The standalone rate limiting (Here: the standalone ratelimit API you call with your own identifier. Not a key's limit and not the gateway policy.) service and its overrides. Singular, not `ratelimits`. |
 | `portal` | API Management | Developer portals and the end-user sessions they mint. |
 | `analytics` | Both | SQL queries over verifications, rate limits, gateway requests, and runtime logs. |
 | `projects` | Compute | Projects. |
 | `apps` | Compute | Apps within a project, including the git connection. |
 | `environments` | Compute | Environment settings and variables. |
 | `deployments` | Compute | Creating, starting, stopping, promoting, and rolling back deployments. |
-| `domains` | Compute | Custom domains and their <Tooltip tip="Here: proving you control a custom domain. Not key verification and not the gateway's key-auth policy.">verification</Tooltip>. |
+| `domains` | Compute | Custom domains and their verification (Here: proving you control a custom domain. Not key verification and not the gateway's key-auth policy.). |
 | `gateway` | Compute | Gateway policies on an environment. |
 | `github` | Compute | Installing the Unkey GitHub App for the workspace. |
 
