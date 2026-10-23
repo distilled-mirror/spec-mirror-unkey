@@ -73,7 +73,7 @@ What each status means on this API, and the codes you'll see most often with it:
 | 403 | The key is known but may not do this. | `err:unkey:authorization:insufficient_permissions`, `err:unkey:authorization:key_disabled`, `err:unkey:authorization:workspace_disabled`, `err:unkey:authorization:forbidden`, `err:unkey:limits:custom_domain_limit_exceeded` |
 | 404 | The named resource does not exist in your workspace, or you may not see it. | `err:unkey:data:*_not_found` for each resource type |
 | 408 | The request took too long to read. | `err:user:bad_request:request_timeout` |
-| 409 | Creating a resource that already exists. | `err:unkey:data:*_already_exists` for identities, roles, permissions, projects, apps, domains, portals |
+| 409 | Creating a resource that already exists. | `err:unkey:data:*_already_exists` for identities, roles, permissions, projects (Groups of apps, usually one per codebase or product.), apps, domains, portals |
 | 410 | The resource existed and has been removed. | `err:unkey:data:ratelimit_namespace_gone` |
 | 412 | A precondition on the resource is not met. | `err:unkey:application:protected_resource`, `err:unkey:application:precondition_failed` |
 | 413 | The body exceeds the size limit. | `err:user:bad_request:request_body_too_large` |
@@ -83,7 +83,7 @@ What each status means on this API, and the codes you'll see most often with it:
 | 500 | Something failed on our side. Quote `meta.requestId` to support. | `err:unkey:application:unexpected_error`, `err:unkey:application:service_unavailable`, `err:unkey:application:assertion_failed` |
 | 503 | The analytics backend is unreachable. Retry with backoff. | `err:unkey:data:analytics_connection_failed` |
 
-An invalid key isn't an HTTP error. When you verify a key that isn't valid, `keys.verifyKey` returns HTTP 200 with `data.valid: false` and a `data.code`, because your request worked. The HTTP errors above are for problems with your request or your root key. See [Verifying keys](/docs/api-management/keys/verifying-keys).
+An invalid key isn't an HTTP error. When you verify a key that isn't valid, `keys.verifyKey` returns HTTP 200 with `data.valid: false` and a `data.code`, because your request worked. The HTTP errors above are for problems with your request or your root key. See [Verifying keys](/docs/api-management/keys/verifying-keys.md).
 
 ## Handling errors
 

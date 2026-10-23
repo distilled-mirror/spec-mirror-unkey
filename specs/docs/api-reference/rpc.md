@@ -39,7 +39,7 @@ Almost every procedure is under `/v2`. A procedure gets a new version prefix whe
 | `ratelimit` | API Management | The standalone rate limiting (Here: the standalone ratelimit API you call with your own identifier. Not a key's limit and not the gateway policy.) service and its overrides. Singular, not `ratelimits`. |
 | `portal` | API Management | Developer portals and the end-user sessions they mint. |
 | `analytics` | Both | SQL queries over verifications, rate limits, gateway requests, and runtime logs. |
-| `projects` | Compute | Projects. |
+| `projects` | Compute | Projects (Groups of apps, usually one per codebase or product.). |
 | `apps` | Compute | Apps within a project, including the git connection. |
 | `environments` | Compute | Environment settings and variables. |
 | `deployments` | Compute | Creating, starting, stopping, promoting, and rolling back deployments. |

@@ -16,7 +16,7 @@ Compute and API Management share one HTTP API. Here's how to make a request, rea
 
 ## Make a request
 
-Send a `POST` with a JSON body to `https://api.unkey.com/v2/{service}.{procedure}`. There are no path or query parameters. The only `GET` routes are `/v2/liveness`, the health check, and `/openapi.yaml` and `/reference`, which serve the OpenAPI document and a browsable reference. See [RPC naming convention](/docs/platform/api/rpc-convention) for how endpoints are named.
+Send a `POST` with a JSON body to `https://api.unkey.com/v2/{service}.{procedure}`. There are no path or query parameters. The only `GET` routes are `/v2/liveness`, the health check, and `/openapi.yaml` and `/reference`, which serve the OpenAPI document and a browsable reference. See [RPC naming convention](/docs/platform/api/rpc-convention.md) for how endpoints are named.
 
 ```bash theme={"system"}
 curl -X POST https://api.unkey.com/v2/keys.verifyKey \
@@ -25,7 +25,7 @@ curl -X POST https://api.unkey.com/v2/keys.verifyKey \
   -d '{"key": "sk_live_..."}'
 ```
 
-Put a root key in the `Authorization: Bearer` header. See [API authentication](/docs/platform/api/authentication).
+Put a root key in the `Authorization: Bearer` header. See [API authentication](/docs/platform/api/authentication.md).
 
 ## Read the response
 
@@ -47,7 +47,7 @@ The endpoint's result. Its shape is documented per endpoint in each product's AP
 
 **error** `object`
 
-Present instead of `data` when the request failed. Its fields are on [API error envelope](/docs/platform/api/errors).
+Present instead of `data` when the request failed. Its fields are on [API error envelope](/docs/platform/api/errors.md).
 
 **pagination** `object`
 
