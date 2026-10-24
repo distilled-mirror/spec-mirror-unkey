@@ -83,7 +83,7 @@ What each status means on this API, and the codes you'll see most often with it:
 | 500 | Something failed on our side. Quote `meta.requestId` to support. | `err:unkey:application:unexpected_error`, `err:unkey:application:service_unavailable`, `err:unkey:application:assertion_failed` |
 | 503 | The analytics backend is unreachable. Retry with backoff. | `err:unkey:data:analytics_connection_failed` |
 
-An invalid key isn't an HTTP error. When you verify a key that isn't valid, `keys.verifyKey` returns HTTP 200 with `data.valid: false` and a `data.code`, because your request worked. The HTTP errors above are for problems with your request or your root key. See [Verifying keys](/docs/api-management/keys/verifying-keys.md).
+An invalid key isn't an HTTP error. When you verify a key that isn't valid, `keys.verifyKey` returns HTTP 200 with `data.valid: false` and a `data.code`, because your request worked. The HTTP errors above are for problems with your request or your root key. See [Verifying keys](https://www.unkey.com/docs/api-management/keys/verifying-keys.md).
 
 ## Handling errors
 

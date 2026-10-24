@@ -25,7 +25,7 @@ curl -X POST https://api.unkey.com/v2/apis.listKeys \
   -d '{"apiId": "api_1234abcd"}'
 ```
 
-A root key belongs to one workspace, and every request stays inside it. You don't pass a workspace ID, and a key can't reach another workspace. See [Root keys](/docs/platform/root-keys/overview.md) to create one.
+A root key belongs to one workspace, and every request stays inside it. You don't pass a workspace ID, and a key can't reach another workspace. See [Root keys](https://www.unkey.com/docs/platform/root-keys/overview.md) to create one.
 
 ## Errors a bad key returns
 
@@ -37,9 +37,9 @@ A root key belongs to one workspace, and every request stays inside it. You don'
 | 403 | `err:unkey:authorization:key_disabled` | The key is disabled. |
 | 403 | `err:unkey:authorization:workspace_disabled` | The key's workspace is disabled. |
 | 403 | `err:unkey:authorization:forbidden` | The key has expired, for example because a rotation's grace period ended. |
-| 403 | `err:unkey:authorization:insufficient_permissions` | The key doesn't have the permission the endpoint needs. The `detail` names it. Some endpoints return `404` instead, the same as if the resource didn't exist. See [Root key permissions](/docs/platform/root-keys/permissions.md). |
+| 403 | `err:unkey:authorization:insufficient_permissions` | The key doesn't have the permission the endpoint needs. The `detail` names it. Some endpoints return `404` instead, the same as if the resource didn't exist. See [Root key permissions](https://www.unkey.com/docs/platform/root-keys/permissions.md). |
 
-All of these use the standard [error envelope](/docs/platform/api/errors.md), so one error handler covers them.
+All of these use the standard [error envelope](https://www.unkey.com/docs/platform/api/errors.md), so one error handler covers them.
 
 ## Keep root keys safe
 
@@ -47,9 +47,9 @@ Treat a root key like a database password:
 
 * Create one per service with only the permissions that service needs. A leaked key then does less damage and is easy to replace.
 * Never put a root key in client-side code, a mobile app, or a public repository.
-* If one leaks, rotate or delete it under **Root Keys** in the dashboard sidebar. See [Root keys](/docs/platform/root-keys/overview.md).
+* If one leaks, rotate or delete it under **Root Keys** in the dashboard sidebar. See [Root keys](https://www.unkey.com/docs/platform/root-keys/overview.md).
 
-Root keys are for managing Unkey. They aren't the API keys you issue to your own users, which you check with `keys.verifyKey`. See [Verifying keys](/docs/api-management/keys/verifying-keys.md).
+Root keys are for managing Unkey. They aren't the API keys you issue to your own users, which you check with `keys.verifyKey`. See [Verifying keys](https://www.unkey.com/docs/api-management/keys/verifying-keys.md).
 
 
 This documentation is built and hosted on [Mintlify](https://mintlify.com), a developer documentation platform.
