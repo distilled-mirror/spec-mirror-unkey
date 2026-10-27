@@ -62,6 +62,7 @@
 - [protected_resource](https://www.unkey.com/docs/errors/unkey/application/protected_resource.md): The delete was refused because the resource has delete protection enabled.
 - [unkey/application/service_unavailable](https://www.unkey.com/docs/errors/unkey/application/service_unavailable.md): The API failed on our side and couldn't complete the request, so retry with backoff.
 - [unexpected_error](https://www.unkey.com/docs/errors/unkey/application/unexpected_error.md): Something failed on our side that has no more specific error code.
+- [credential_rejected](https://www.unkey.com/docs/errors/unkey/authentication/credential_rejected.md): The CLI refresh token is unknown, expired, revoked, or already used.
 - [unkey/authentication/key_not_found](https://www.unkey.com/docs/errors/unkey/authentication/key_not_found.md): The bearer token is not a root key the API recognizes.
 - [malformed](https://www.unkey.com/docs/errors/unkey/authentication/malformed.md): The Authorization header is not in the form Bearer <token>.
 - [missing](https://www.unkey.com/docs/errors/unkey/authentication/missing.md): The endpoint didn't accept the kind of credential you sent, so it couldn't identify you.
@@ -116,6 +117,7 @@
 - [request_body_too_large](https://www.unkey.com/docs/errors/user/bad_request/request_body_too_large.md): The request body is larger than the 10 MiB the API accepts.
 - [request_body_unreadable](https://www.unkey.com/docs/errors/user/bad_request/request_body_unreadable.md): The API could not read the request body to the end.
 - [request_timeout](https://www.unkey.com/docs/errors/user/bad_request/request_timeout.md): The request did not finish within the API's one minute deadline.
+- [ip_rate_limited](https://www.unkey.com/docs/errors/user/too_many_requests/ip_rate_limited.md): Your IP address is sending too many requests to an unauthenticated Unkey API endpoint.
 - [query_quota_exceeded](https://www.unkey.com/docs/errors/user/too_many_requests/query_quota_exceeded.md): Your workspace used up its analytics query quota for the current window.
 - [workspace_rate_limited](https://www.unkey.com/docs/errors/user/too_many_requests/workspace_rate_limited.md): The workspace is sending too many requests to the Unkey API.
 - [query_execution_timeout](https://www.unkey.com/docs/errors/user/unprocessable_entity/query_execution_timeout.md): The analytics query ran longer than its 10 second budget and was canceled.
