@@ -32,9 +32,10 @@
 - [Too many requests](https://www.unkey.com/docs/platform/api/rate-limits.md): What a 429 from api.unkey.com means and what to do about it.
 - [The unkey CLI](https://www.unkey.com/docs/platform/cli/overview.md): Run Unkey from your terminal with the unkey CLI and find the page for each command.
 - [Install the CLI](https://www.unkey.com/docs/platform/cli/install.md): Install the unkey CLI from npm or a GitHub release and check its version.
-- [CLI authentication](https://www.unkey.com/docs/platform/cli/authentication.md): Give the CLI a root key by flag, environment variable, or stored config.
+- [CLI authentication](https://www.unkey.com/docs/platform/cli/authentication.md): Give the CLI a root key by signing in, or by flag, environment variable, or the system keychain.
+- [unkey login](https://www.unkey.com/docs/platform/cli/login.md): Sign in from the terminal and store a CLI session with the permissions you select.
 - [CLI output and shared flags](https://www.unkey.com/docs/platform/cli/output-and-flags.md): Use the flags every unkey api command shares to pipe JSON or send a raw body.
-- [unkey auth login](https://www.unkey.com/docs/platform/cli/auth/login.md): Store a root key locally so unkey api commands stop asking for it.
+- [unkey auth login](https://www.unkey.com/docs/platform/cli/auth/login.md): Sign in from the terminal. Same command as unkey login.
 - [AI coding](https://www.unkey.com/docs/platform/ai-coding/overview.md): Connect your AI coding assistant to Unkey so it can manage your workspace and read the docs.
 - [Unkey MCP servers](https://www.unkey.com/docs/platform/ai-coding/mcp-servers.md): Let an AI assistant manage your keys, APIs, and deployments through Unkey's hosted MCP servers.
 - [Use Unkey with Claude Code](https://www.unkey.com/docs/platform/ai-coding/claude-code.md): Add the Unkey MCP servers and docs to Claude Code with one command each.
