@@ -9,7 +9,7 @@
 > The word environment means production or preview in Compute. Rate limiting has four meanings on this site; the glossary lists them.
 
 - [Unkey Products](https://www.unkey.com/docs/index.md): Deploy apps with Compute or add API keys to any app with API Management.
-- [The Unkey platform](https://www.unkey.com/docs/platform/index.md): Unkey hosts API management and Compute, and you can self-host the source.
+- [The Unkey platform](https://www.unkey.com/docs/platform/index.md): Unkey hosts API Management and Compute, and you can self-host the source.
 - [Glossary](https://www.unkey.com/docs/platform/glossary.md): Look up the terms Unkey uses and which product each one belongs to.
 - [Workspaces](https://www.unkey.com/docs/platform/workspace/overview.md): Understand what a workspace holds and how to create or switch between them.
 - [Workspace settings](https://www.unkey.com/docs/platform/workspace/settings.md): Rename your workspace, copy its ID, and connect the GitHub App.
@@ -32,10 +32,20 @@
 - [Too many requests](https://www.unkey.com/docs/platform/api/rate-limits.md): What a 429 from api.unkey.com means and what to do about it.
 - [The unkey CLI](https://www.unkey.com/docs/platform/cli/overview.md): Run Unkey from your terminal with the unkey CLI and find the page for each command.
 - [Install the CLI](https://www.unkey.com/docs/platform/cli/install.md): Install the unkey CLI from npm or a GitHub release and check its version.
-- [CLI authentication](https://www.unkey.com/docs/platform/cli/authentication.md): Give the CLI a root key by signing in, or by flag, environment variable, or the system keychain.
+- [CLI authentication](https://www.unkey.com/docs/platform/cli/authentication.md): Sign in with a CLI session, or provide a root key through a flag, environment variable, or the system keychain.
 - [unkey login](https://www.unkey.com/docs/platform/cli/login.md): Sign in from the terminal and store a CLI session with the permissions you select.
-- [CLI output and shared flags](https://www.unkey.com/docs/platform/cli/output-and-flags.md): Use the flags every unkey api command shares to pipe JSON or send a raw body.
-- [unkey auth login](https://www.unkey.com/docs/platform/cli/auth/login.md): Sign in from the terminal. Same command as unkey login.
+- [CLI output and shared flags](https://www.unkey.com/docs/platform/cli/output-and-flags.md): Read human-friendly output, pipe the full JSON response, and use shared resource command flags.
+- [unkey root-keys create](https://www.unkey.com/docs/platform/cli/root-keys/create-key.md): Create a root key with permissions scoped to your workspace.
+- [unkey root-keys delete](https://www.unkey.com/docs/platform/cli/root-keys/delete-key.md): Delete a root key so it can no longer authenticate.
+- [unkey root-keys list](https://www.unkey.com/docs/platform/cli/root-keys/list-keys.md): List readable root keys without exposing their secrets.
+- [unkey root-keys reroll](https://www.unkey.com/docs/platform/cli/root-keys/reroll-key.md): Create a replacement root key secret and control when the original expires.
+- [unkey root-keys update](https://www.unkey.com/docs/platform/cli/root-keys/update-key.md): Change a root key's name, enabled state, or permission set.
+- [unkey logs api-requests list](https://www.unkey.com/docs/platform/cli/logs/list-api-requests.md): List the requests Unkey served for your workspace, with filters and pagination.
+- [unkey logs api-requests metrics](https://www.unkey.com/docs/platform/cli/logs/get-api-request-metrics.md): Count API requests per time bucket, grouped by HTTP status class.
+- [unkey workspace flags get](https://www.unkey.com/docs/platform/cli/workspace/get-flags.md): Read your workspace's feature flags and their enabled states.
+- [unkey workspace limits](https://www.unkey.com/docs/platform/cli/workspace/get-limits.md): Read workspace limits and the current usage counted against them.
+- [unkey workspace usage](https://www.unkey.com/docs/platform/cli/workspace/get-usage.md): Read billable API operations, compute usage, and active keys for a calendar month.
+- [unkey workspace flags update](https://www.unkey.com/docs/platform/cli/workspace/update-flag.md): Enable or disable a feature flag for your workspace.
 - [AI coding](https://www.unkey.com/docs/platform/ai-coding/overview.md): Connect your AI coding assistant to Unkey so it can manage your workspace and read the docs.
 - [Unkey MCP servers](https://www.unkey.com/docs/platform/ai-coding/mcp-servers.md): Let an AI assistant manage your keys, APIs, and deployments through Unkey's hosted MCP servers.
 - [Use Unkey with Claude Code](https://www.unkey.com/docs/platform/ai-coding/claude-code.md): Add the Unkey MCP servers and docs to Claude Code with one command each.
@@ -64,6 +74,7 @@
 - [unkey/application/service_unavailable](https://www.unkey.com/docs/errors/unkey/application/service_unavailable.md): The API failed on our side and couldn't complete the request, so retry with backoff.
 - [unexpected_error](https://www.unkey.com/docs/errors/unkey/application/unexpected_error.md): Something failed on our side that has no more specific error code.
 - [credential_rejected](https://www.unkey.com/docs/errors/unkey/authentication/credential_rejected.md): The CLI refresh token is unknown, expired, revoked, or already used.
+- [device_login_expired](https://www.unkey.com/docs/errors/unkey/authentication/device_login_expired.md): The CLI device login expired before token exchange completed.
 - [unkey/authentication/key_not_found](https://www.unkey.com/docs/errors/unkey/authentication/key_not_found.md): The bearer token is not a root key the API recognizes.
 - [malformed](https://www.unkey.com/docs/errors/unkey/authentication/malformed.md): The Authorization header is not in the form Bearer <token>.
 - [missing](https://www.unkey.com/docs/errors/unkey/authentication/missing.md): The endpoint didn't accept the kind of credential you sent, so it couldn't identify you.
@@ -83,7 +94,7 @@
 - [domain_already_exists](https://www.unkey.com/docs/errors/unkey/data/domain_already_exists.md): The custom domain is already attached to your workspace.
 - [domain_not_found](https://www.unkey.com/docs/errors/unkey/data/domain_not_found.md): The custom domain is not attached to your workspace.
 - [environment_not_found](https://www.unkey.com/docs/errors/unkey/data/environment_not_found.md): The project, app, or environment in the request did not resolve.
-- [flag_not_found](https://www.unkey.com/docs/errors/unkey/data/flag_not_found.md): NotFound indicates the requested flag definition was not found.
+- [flag_not_found](https://www.unkey.com/docs/errors/unkey/data/flag_not_found.md): The workspace flag slug does not match a flag definition.
 - [identity_already_exists](https://www.unkey.com/docs/errors/unkey/data/identity_already_exists.md): An identity with that externalId already exists in the workspace.
 - [identity_not_found](https://www.unkey.com/docs/errors/unkey/data/identity_not_found.md): The identity does not exist in your workspace.
 - [key_auth_not_found](https://www.unkey.com/docs/errors/unkey/data/key_auth_not_found.md): The keyspaceId passed to the deprecated deploy.createDeployment does not exist.
@@ -120,6 +131,7 @@
 - [request_timeout](https://www.unkey.com/docs/errors/user/bad_request/request_timeout.md): The request did not finish within the API's one minute deadline.
 - [ip_rate_limited](https://www.unkey.com/docs/errors/user/too_many_requests/ip_rate_limited.md): Your IP address is sending too many requests to an unauthenticated Unkey API endpoint.
 - [query_quota_exceeded](https://www.unkey.com/docs/errors/user/too_many_requests/query_quota_exceeded.md): Your workspace used up its analytics query quota for the current window.
+- [user_rate_limited](https://www.unkey.com/docs/errors/user/too_many_requests/user_rate_limited.md): Your account is sending too many CLI login verification requests.
 - [workspace_rate_limited](https://www.unkey.com/docs/errors/user/too_many_requests/workspace_rate_limited.md): The workspace is sending too many requests to the Unkey API.
 - [query_execution_timeout](https://www.unkey.com/docs/errors/user/unprocessable_entity/query_execution_timeout.md): The analytics query ran longer than its 10 second budget and was canceled.
 - [query_memory_limit_exceeded](https://www.unkey.com/docs/errors/user/unprocessable_entity/query_memory_limit_exceeded.md): The analytics query used too much memory or its result exceeded 4 MiB.
@@ -269,40 +281,43 @@
 - [Query gateway requests and runtime logs](https://www.unkey.com/docs/compute/observe/analytics-api.md): Query gateway requests and runtime logs with SQL through the analytics API.
 - [unkey deploy](https://www.unkey.com/docs/compute/cli/deploy.md): Deploy a prebuilt container image to a project with one command.
 - [unkey healthcheck](https://www.unkey.com/docs/compute/cli/healthcheck.md): Probe a URL and exit non-zero unless it answers 200, for scripts and CI.
-- [unkey api projects create-project](https://www.unkey.com/docs/compute/cli/projects/create-project.md): Create a project to hold apps and their deployments.
-- [unkey api projects get-project](https://www.unkey.com/docs/compute/cli/projects/get-project.md): Look up one project by ID or slug.
-- [unkey api projects list-projects](https://www.unkey.com/docs/compute/cli/projects/list-projects.md): List the projects in your workspace one page at a time.
-- [unkey api projects update-project](https://www.unkey.com/docs/compute/cli/projects/update-project.md): Rename a project or change its slug or delete protection.
-- [unkey api projects delete-project](https://www.unkey.com/docs/compute/cli/projects/delete-project.md): Delete a project and everything in it.
-- [unkey api apps create-app](https://www.unkey.com/docs/compute/cli/apps/create-app.md): Create an app in a project, optionally connected to a GitHub repository.
-- [unkey api apps get-app](https://www.unkey.com/docs/compute/cli/apps/get-app.md): Look up one app in a project by ID or slug.
-- [unkey api apps list-apps](https://www.unkey.com/docs/compute/cli/apps/list-apps.md): List the apps in a project one page at a time.
-- [unkey api apps update-app](https://www.unkey.com/docs/compute/cli/apps/update-app.md): Rename an app or change its slug, repository, image, or delete protection.
-- [unkey api apps delete-app](https://www.unkey.com/docs/compute/cli/apps/delete-app.md): Delete an app together with everything deployed under it.
-- [unkey api environments list-environments](https://www.unkey.com/docs/compute/cli/environments/list-environments.md): List the production and preview environments of an app.
-- [unkey api environments get-environment](https://www.unkey.com/docs/compute/cli/environments/get-environment.md): Look up an environment with its build and runtime settings.
-- [unkey api environments update-settings](https://www.unkey.com/docs/compute/cli/environments/update-settings.md): Change how an environment builds and runs its next deployment.
-- [unkey api environments list-environment-variables](https://www.unkey.com/docs/compute/cli/environments/list-environment-variables.md): List the variables of an environment one page at a time.
-- [unkey api environments set-environment-variables](https://www.unkey.com/docs/compute/cli/environments/set-environment-variables.md): Create or update the variables of an environment in one atomic call.
-- [unkey api environments remove-environment-variables](https://www.unkey.com/docs/compute/cli/environments/remove-environment-variables.md): Delete named variables from an environment in one atomic call.
-- [unkey api deployments create-deployment](https://www.unkey.com/docs/compute/cli/deployments/create-deployment.md): Start a deployment from a Git ref, an image, or an earlier deployment.
-- [unkey api deployments get-deployment](https://www.unkey.com/docs/compute/cli/deployments/get-deployment.md): Look up the status and details of a deployment.
-- [unkey api deployments list-deployments](https://www.unkey.com/docs/compute/cli/deployments/list-deployments.md): List deployments newest first, filtered by app or status.
-- [unkey api deployments promote-deployment](https://www.unkey.com/docs/compute/cli/deployments/promote-deployment.md): Make a ready production deployment the live one.
-- [unkey api deployments rollback-deployment](https://www.unkey.com/docs/compute/cli/deployments/rollback-deployment.md): Send production traffic back to an earlier deployment.
-- [unkey api deployments start-deployment](https://www.unkey.com/docs/compute/cli/deployments/start-deployment.md): Resume a stopped preview deployment.
-- [unkey api deployments stop-deployment](https://www.unkey.com/docs/compute/cli/deployments/stop-deployment.md): Stop a running preview deployment and release its compute.
-- [unkey api domains create-domain](https://www.unkey.com/docs/compute/cli/domains/create-domain.md): Attach a custom domain to an environment and get its DNS records.
-- [unkey api domains get-domain](https://www.unkey.com/docs/compute/cli/domains/get-domain.md): Look up a custom domain and its verification status.
-- [unkey api domains list-domains](https://www.unkey.com/docs/compute/cli/domains/list-domains.md): List the custom domains in your workspace with their status.
-- [unkey api domains verify-domain](https://www.unkey.com/docs/compute/cli/domains/verify-domain.md): Restart verification of a pending or failed custom domain.
-- [unkey api domains delete-domain](https://www.unkey.com/docs/compute/cli/domains/delete-domain.md): Detach a custom domain so Unkey stops serving it.
-- [unkey api gateway list-policies](https://www.unkey.com/docs/compute/cli/gateway/list-policies.md): List the gateway policies of an environment in evaluation order.
-- [unkey api gateway set-policies](https://www.unkey.com/docs/compute/cli/gateway/set-policies.md): Replace the whole ordered list of gateway policies for an environment.
-- [unkey api gateway update-policy](https://www.unkey.com/docs/compute/cli/gateway/update-policy.md): Change one gateway policy in place without resending the list.
-- [unkey api github install-app](https://www.unkey.com/docs/compute/cli/github/install-app.md): Get the URL that installs the Unkey GitHub App in your workspace.
-- [unkey api analytics get-gateway-requests](https://www.unkey.com/docs/compute/cli/analytics/get-gateway-requests.md): Run a SQL query against the gateway request logs of your workspace.
-- [unkey api analytics get-runtime-logs](https://www.unkey.com/docs/compute/cli/analytics/get-runtime-logs.md): Run a SQL query against the runtime logs of your deployments.
+- [unkey projects create](https://www.unkey.com/docs/compute/cli/projects/create-project.md): Create a project to hold apps and their deployments.
+- [unkey projects get](https://www.unkey.com/docs/compute/cli/projects/get-project.md): Look up one project by ID or slug.
+- [unkey projects list](https://www.unkey.com/docs/compute/cli/projects/list-projects.md): List the projects in your workspace one page at a time.
+- [unkey projects update](https://www.unkey.com/docs/compute/cli/projects/update-project.md): Rename a project or change its slug or delete protection.
+- [unkey projects delete](https://www.unkey.com/docs/compute/cli/projects/delete-project.md): Delete a project and everything in it.
+- [unkey apps create](https://www.unkey.com/docs/compute/cli/apps/create-app.md): Create an app in a project, optionally connected to a GitHub repository.
+- [unkey apps get](https://www.unkey.com/docs/compute/cli/apps/get-app.md): Look up one app in a project by ID or slug.
+- [unkey apps list](https://www.unkey.com/docs/compute/cli/apps/list-apps.md): List the apps in a project one page at a time.
+- [unkey apps update](https://www.unkey.com/docs/compute/cli/apps/update-app.md): Rename an app or change its slug, repository, image, or delete protection.
+- [unkey apps delete](https://www.unkey.com/docs/compute/cli/apps/delete-app.md): Delete an app together with everything deployed under it.
+- [unkey environments list](https://www.unkey.com/docs/compute/cli/environments/list-environments.md): List the production and preview environments of an app.
+- [unkey environments get](https://www.unkey.com/docs/compute/cli/environments/get-environment.md): Look up an environment with its build and runtime settings.
+- [unkey environments settings update](https://www.unkey.com/docs/compute/cli/environments/update-settings.md): Change how an environment builds and runs its next deployment.
+- [unkey environments variables list](https://www.unkey.com/docs/compute/cli/environments/list-environment-variables.md): List the variables of an environment one page at a time.
+- [unkey environments variables set](https://www.unkey.com/docs/compute/cli/environments/set-environment-variables.md): Create or update the variables of an environment in one atomic call.
+- [unkey environments variables remove](https://www.unkey.com/docs/compute/cli/environments/remove-environment-variables.md): Delete named variables from an environment in one atomic call.
+- [unkey deployments create](https://www.unkey.com/docs/compute/cli/deployments/create-deployment.md): Start a deployment from a Git ref, an image, or an earlier deployment.
+- [unkey deployments get](https://www.unkey.com/docs/compute/cli/deployments/get-deployment.md): Look up the status and details of a deployment.
+- [unkey deployments list](https://www.unkey.com/docs/compute/cli/deployments/list-deployments.md): List deployments newest first, filtered by app or status.
+- [unkey deployments promote](https://www.unkey.com/docs/compute/cli/deployments/promote-deployment.md): Make a ready production deployment the live one.
+- [unkey deployments rollback](https://www.unkey.com/docs/compute/cli/deployments/rollback-deployment.md): Send production traffic back to an earlier deployment.
+- [unkey deployments start](https://www.unkey.com/docs/compute/cli/deployments/start-deployment.md): Resume a stopped preview deployment.
+- [unkey deployments stop](https://www.unkey.com/docs/compute/cli/deployments/stop-deployment.md): Stop a running preview deployment and release its compute.
+- [unkey deployments authorize](https://www.unkey.com/docs/compute/cli/deployments/authorize-deployment.md): Authorize a deployment that is waiting for approval.
+- [unkey deployments cancel](https://www.unkey.com/docs/compute/cli/deployments/cancel-deployment.md): Cancel a queued, building, or deploying deployment.
+- [unkey deployments build-logs list](https://www.unkey.com/docs/compute/cli/deployments/list-build-logs.md): Read a deployment's build output and page through its log entries.
+- [unkey domains create](https://www.unkey.com/docs/compute/cli/domains/create-domain.md): Attach a custom domain to an environment and get its DNS records.
+- [unkey domains get](https://www.unkey.com/docs/compute/cli/domains/get-domain.md): Look up a custom domain and its verification status.
+- [unkey domains list](https://www.unkey.com/docs/compute/cli/domains/list-domains.md): List the custom domains in your workspace with their status.
+- [unkey domains verify](https://www.unkey.com/docs/compute/cli/domains/verify-domain.md): Restart verification of a pending or failed custom domain.
+- [unkey domains delete](https://www.unkey.com/docs/compute/cli/domains/delete-domain.md): Detach a custom domain so Unkey stops serving it.
+- [unkey gateway policies list](https://www.unkey.com/docs/compute/cli/gateway/list-policies.md): List the gateway policies of an environment in evaluation order.
+- [unkey gateway policies set](https://www.unkey.com/docs/compute/cli/gateway/set-policies.md): Replace the whole ordered list of gateway policies for an environment.
+- [unkey gateway policies update](https://www.unkey.com/docs/compute/cli/gateway/update-policy.md): Change one gateway policy in place without resending the list.
+- [unkey github install](https://www.unkey.com/docs/compute/cli/github/install-app.md): Get the URL that installs the Unkey GitHub App in your workspace.
+- [unkey analytics gateway-requests](https://www.unkey.com/docs/compute/cli/analytics/get-gateway-requests.md): Run a SQL query against the gateway request logs of your workspace.
+- [unkey analytics runtime-logs](https://www.unkey.com/docs/compute/cli/analytics/get-runtime-logs.md): Run a SQL query against the runtime logs of your deployments.
 - [Create project](https://www.unkey.com/docs/compute/api-reference/projects/create-project.md): Create a project to group deployments and applications under a workspace-scoped slug.
 - [Get project](https://www.unkey.com/docs/compute/api-reference/projects/get-project.md): Retrieve a single project in your workspace by its id.
 - [List projects](https://www.unkey.com/docs/compute/api-reference/projects/list-projects.md): Retrieve a paginated list of projects in your workspace.
@@ -337,7 +352,7 @@
 - [Install GitHub App](https://www.unkey.com/docs/compute/api-reference/github/install-github-app.md): Start installing the Unkey GitHub App for your workspace. Returns a GitHub App install URL: open it in a browser to install the app and grant repository access. After installation GitHub returns to Unkey, which binds the installation to your workspace and lands you in the workspace settings.
 - [Query gateway request data](https://www.unkey.com/docs/compute/api-reference/analytics/query-gateway-request-data.md): A query can use only the public alias `gateway_requests_v1`. CTEs, subqueries, UNION, and EXCEPT are permitted. The root key must have the `project.*.read_gateway_requests` permission. Unkey limits each query to the workspace of the root key. To get the data for one project, app, or environment, add…
 - [Query runtime log data](https://www.unkey.com/docs/compute/api-reference/analytics/query-runtime-log-data.md): A query can use only the public alias `runtime_logs_v1`. CTEs, subqueries, UNION, and EXCEPT are permitted. The root key must have the `project.*.read_runtime_logs` permission. Unkey limits each query to the workspace of the root key. To get the logs of one project, app, environment, or deployment,…
-- [API management](https://www.unkey.com/docs/api-management/index.md): Put API keys in front of an app you host anywhere.
+- [API Management](https://www.unkey.com/docs/api-management/index.md): Put API keys in front of an app you host anywhere.
 - [Issue and verify your first key](https://www.unkey.com/docs/api-management/get-started/quickstart.md): Create a keyspace and verify your first key in a few minutes.
 - [Keyspaces, keys, identities, and root keys](https://www.unkey.com/docs/api-management/get-started/concepts.md): The four objects you work with and how they fit together.
 - [Next.js guide](https://www.unkey.com/docs/api-management/guides/nextjs.md): Protect a Next.js route handler with an API key.
@@ -391,52 +406,58 @@
 - [Tiered subscriptions](https://www.unkey.com/docs/api-management/cookbook/tiered-subscriptions.md): Model free, pro, and enterprise plans on a key.
 - [Go middleware for net/http, Gin, and Echo](https://www.unkey.com/docs/api-management/cookbook/go-middleware.md): Drop-in key verification middleware for net/http, Gin, and Echo.
 - [FastAPI authentication](https://www.unkey.com/docs/api-management/cookbook/fastapi-auth.md): Verify API keys in FastAPI with a typed dependency.
-- [unkey api apis create-api](https://www.unkey.com/docs/api-management/cli/apis/create-api.md): Create a keyspace to hold your API keys.
-- [unkey api apis delete-api](https://www.unkey.com/docs/api-management/cli/apis/delete-api.md): Delete a keyspace and invalidate every key in it.
-- [unkey api apis get-api](https://www.unkey.com/docs/api-management/cli/apis/get-api.md): Look up a keyspace by its ID.
-- [unkey api apis list-keys](https://www.unkey.com/docs/api-management/cli/apis/list-keys.md): List the keys in a keyspace one page at a time.
-- [unkey api keys add-permissions](https://www.unkey.com/docs/api-management/cli/keys/add-permissions.md): Grant extra permissions to a key without removing the ones it has.
-- [unkey api keys add-roles](https://www.unkey.com/docs/api-management/cli/keys/add-roles.md): Assign extra roles to a key without removing the ones it has.
-- [unkey api keys create-key](https://www.unkey.com/docs/api-management/cli/keys/create-key.md): Create an API key in a keyspace from the command line.
-- [unkey api keys delete-key](https://www.unkey.com/docs/api-management/cli/keys/delete-key.md): Delete a key, softly by default or permanently.
-- [unkey api keys get-key](https://www.unkey.com/docs/api-management/cli/keys/get-key.md): Look up a key's configuration by its ID.
-- [unkey api keys migrate-keys](https://www.unkey.com/docs/api-management/cli/keys/migrate-keys.md): Import existing key hashes into a keyspace under a migration ID.
-- [unkey api keys remove-permissions](https://www.unkey.com/docs/api-management/cli/keys/remove-permissions.md): Revoke direct permissions from a key without touching its roles.
-- [unkey api keys remove-roles](https://www.unkey.com/docs/api-management/cli/keys/remove-roles.md): Remove roles from a key without touching its direct permissions.
-- [unkey api keys reroll-key](https://www.unkey.com/docs/api-management/cli/keys/reroll-key.md): Issue a replacement key and let the old one expire after a grace period.
-- [unkey api keys set-permissions](https://www.unkey.com/docs/api-management/cli/keys/set-permissions.md): Replace the direct permissions of a key with a new set.
-- [unkey api keys set-roles](https://www.unkey.com/docs/api-management/cli/keys/set-roles.md): Replace the roles of a key with a new set.
-- [unkey api keys update-credits](https://www.unkey.com/docs/api-management/cli/keys/update-credits.md): Set or adjust the remaining credits on a key.
-- [unkey api keys update-key](https://www.unkey.com/docs/api-management/cli/keys/update-key.md): Change the settings of an existing key without reissuing it.
-- [unkey api keys verify-key](https://www.unkey.com/docs/api-management/cli/keys/verify-key.md): Verify a key the way your API would on a request.
-- [unkey api keys whoami](https://www.unkey.com/docs/api-management/cli/keys/whoami.md): Look up a key by its plaintext value.
-- [unkey api identities create-identity](https://www.unkey.com/docs/api-management/cli/identities/create-identity.md): Create an identity that groups keys under one user or tenant.
-- [unkey api identities delete-identity](https://www.unkey.com/docs/api-management/cli/identities/delete-identity.md): Delete an identity and the rate limits it shares with its keys.
-- [unkey api identities get-identity](https://www.unkey.com/docs/api-management/cli/identities/get-identity.md): Look up an identity with its metadata and rate limits.
-- [unkey api identities list-identities](https://www.unkey.com/docs/api-management/cli/identities/list-identities.md): List the identities in your workspace one page at a time.
-- [unkey api identities update-identity](https://www.unkey.com/docs/api-management/cli/identities/update-identity.md): Replace the metadata or rate limits of an identity.
-- [unkey api permissions create-permission](https://www.unkey.com/docs/api-management/cli/permissions/create-permission.md): Create a permission that keys and roles can be granted.
-- [unkey api permissions create-role](https://www.unkey.com/docs/api-management/cli/permissions/create-role.md): Create a role, optionally with an initial set of permissions.
-- [unkey api permissions delete-permission](https://www.unkey.com/docs/api-management/cli/permissions/delete-permission.md): Delete a permission and remove it from every key and role.
-- [unkey api permissions delete-role](https://www.unkey.com/docs/api-management/cli/permissions/delete-role.md): Delete a role and remove it from every key that has it.
-- [unkey api permissions get-permission](https://www.unkey.com/docs/api-management/cli/permissions/get-permission.md): Look up a permission by its ID or slug.
-- [unkey api permissions get-role](https://www.unkey.com/docs/api-management/cli/permissions/get-role.md): Look up a role and the permissions attached to it.
-- [unkey api permissions list-permissions](https://www.unkey.com/docs/api-management/cli/permissions/list-permissions.md): List the permissions in your workspace one page at a time.
-- [unkey api permissions list-roles](https://www.unkey.com/docs/api-management/cli/permissions/list-roles.md): List the roles in your workspace one page at a time.
-- [unkey api permissions set-role-permissions](https://www.unkey.com/docs/api-management/cli/permissions/set-role-permissions.md): Replace the permissions attached to a role.
-- [unkey api ratelimit delete-override](https://www.unkey.com/docs/api-management/cli/ratelimit/delete-override.md): Remove an override so an identifier falls back to the default limit.
-- [unkey api ratelimit get-override](https://www.unkey.com/docs/api-management/cli/ratelimit/get-override.md): Look up the rate limit override for an identifier.
-- [unkey api ratelimit limit](https://www.unkey.com/docs/api-management/cli/ratelimit/limit.md): Check and consume a rate limit for an identifier in a namespace.
-- [unkey api ratelimit list-overrides](https://www.unkey.com/docs/api-management/cli/ratelimit/list-overrides.md): List the rate limit overrides in a namespace.
-- [unkey api ratelimit multi-limit](https://www.unkey.com/docs/api-management/cli/ratelimit/multi-limit.md): Check several rate limits in one request that passes only if all of them pass.
-- [unkey api ratelimit set-override](https://www.unkey.com/docs/api-management/cli/ratelimit/set-override.md): Give an identifier or pattern its own rate limit in a namespace.
-- [unkey api analytics get-ratelimits](https://www.unkey.com/docs/api-management/cli/analytics/get-ratelimits.md): Run a SQL query against your rate limit analytics.
-- [unkey api analytics get-verifications](https://www.unkey.com/docs/api-management/cli/analytics/get-verifications.md): Run a SQL query against your key verification analytics.
-- [unkey api portal create-portal](https://www.unkey.com/docs/api-management/cli/portal/create-portal.md): Create a portal for one app or keyspace.
-- [unkey api portal get-portal](https://www.unkey.com/docs/api-management/cli/portal/get-portal.md): Read one portal by its handle or by the resource it serves.
-- [unkey api portal update-portal](https://www.unkey.com/docs/api-management/cli/portal/update-portal.md): Change a portal's handle, name, branding, enabled state, or the resource it serves.
-- [unkey api portal delete-portal](https://www.unkey.com/docs/api-management/cli/portal/delete-portal.md): Delete a portal and cut off the sessions it minted.
-- [unkey api portal create-session](https://www.unkey.com/docs/api-management/cli/portal/create-session.md): Create a short-lived customer portal session for an end user.
+- [unkey apis create](https://www.unkey.com/docs/api-management/cli/apis/create-api.md): Create a keyspace to hold your API keys.
+- [unkey apis delete](https://www.unkey.com/docs/api-management/cli/apis/delete-api.md): Delete a keyspace and invalidate every key in it.
+- [unkey apis get](https://www.unkey.com/docs/api-management/cli/apis/get-api.md): Look up a keyspace by its ID.
+- [unkey keys list](https://www.unkey.com/docs/api-management/cli/apis/list-keys.md): List the keys in a keyspace one page at a time.
+- [unkey keys permissions add](https://www.unkey.com/docs/api-management/cli/keys/add-permissions.md): Grant extra permissions to a key without removing the ones it has.
+- [unkey keys roles add](https://www.unkey.com/docs/api-management/cli/keys/add-roles.md): Assign extra roles to a key without removing the ones it has.
+- [unkey keys create](https://www.unkey.com/docs/api-management/cli/keys/create-key.md): Create an API key in a keyspace from the command line.
+- [unkey keys delete](https://www.unkey.com/docs/api-management/cli/keys/delete-key.md): Delete a key, softly by default or permanently.
+- [unkey keys get](https://www.unkey.com/docs/api-management/cli/keys/get-key.md): Look up a key's configuration by its ID.
+- [unkey keys migrate](https://www.unkey.com/docs/api-management/cli/keys/migrate-keys.md): Import existing key hashes into a keyspace under a migration ID.
+- [unkey keys permissions remove](https://www.unkey.com/docs/api-management/cli/keys/remove-permissions.md): Revoke direct permissions from a key without touching its roles.
+- [unkey keys roles remove](https://www.unkey.com/docs/api-management/cli/keys/remove-roles.md): Remove roles from a key without touching its direct permissions.
+- [unkey keys reroll](https://www.unkey.com/docs/api-management/cli/keys/reroll-key.md): Issue a replacement key and let the old one expire after a grace period.
+- [unkey keys permissions set](https://www.unkey.com/docs/api-management/cli/keys/set-permissions.md): Replace the direct permissions of a key with a new set.
+- [unkey keys roles set](https://www.unkey.com/docs/api-management/cli/keys/set-roles.md): Replace the roles of a key with a new set.
+- [unkey keys credits update](https://www.unkey.com/docs/api-management/cli/keys/update-credits.md): Set or adjust the remaining credits on a key.
+- [unkey keys update](https://www.unkey.com/docs/api-management/cli/keys/update-key.md): Change the settings of an existing key without reissuing it.
+- [unkey keys verify](https://www.unkey.com/docs/api-management/cli/keys/verify-key.md): Verify a key the way your API would on a request.
+- [unkey keys whoami](https://www.unkey.com/docs/api-management/cli/keys/whoami.md): Look up a key by its plaintext value.
+- [unkey identities create](https://www.unkey.com/docs/api-management/cli/identities/create-identity.md): Create an identity that groups keys under one user or tenant.
+- [unkey identities delete](https://www.unkey.com/docs/api-management/cli/identities/delete-identity.md): Delete an identity and the rate limits it shares with its keys.
+- [unkey identities get](https://www.unkey.com/docs/api-management/cli/identities/get-identity.md): Look up an identity with its metadata and rate limits.
+- [unkey identities list](https://www.unkey.com/docs/api-management/cli/identities/list-identities.md): List the identities in your workspace one page at a time.
+- [unkey identities update](https://www.unkey.com/docs/api-management/cli/identities/update-identity.md): Replace the metadata or rate limits of an identity.
+- [unkey permissions create](https://www.unkey.com/docs/api-management/cli/permissions/create-permission.md): Create a permission that keys and roles can be granted.
+- [unkey roles create](https://www.unkey.com/docs/api-management/cli/permissions/create-role.md): Create a role, optionally with an initial set of permissions.
+- [unkey permissions delete](https://www.unkey.com/docs/api-management/cli/permissions/delete-permission.md): Delete a permission and remove it from every key and role.
+- [unkey roles delete](https://www.unkey.com/docs/api-management/cli/permissions/delete-role.md): Delete a role and remove it from every key that has it.
+- [unkey permissions get](https://www.unkey.com/docs/api-management/cli/permissions/get-permission.md): Look up a permission by its ID or slug.
+- [unkey roles get](https://www.unkey.com/docs/api-management/cli/permissions/get-role.md): Look up a role and the permissions attached to it.
+- [unkey permissions list](https://www.unkey.com/docs/api-management/cli/permissions/list-permissions.md): List the permissions in your workspace one page at a time.
+- [unkey roles list](https://www.unkey.com/docs/api-management/cli/permissions/list-roles.md): List the roles in your workspace one page at a time.
+- [unkey roles permissions set](https://www.unkey.com/docs/api-management/cli/permissions/set-role-permissions.md): Replace the permissions attached to a role.
+- [unkey permissions update](https://www.unkey.com/docs/api-management/cli/permissions/update-permission.md): Change a permission's name, slug, or description.
+- [unkey roles update](https://www.unkey.com/docs/api-management/cli/permissions/update-role.md): Rename a role or change its description without changing its permissions.
+- [unkey ratelimit overrides delete](https://www.unkey.com/docs/api-management/cli/ratelimit/delete-override.md): Remove an override so an identifier falls back to the default limit.
+- [unkey ratelimit overrides get](https://www.unkey.com/docs/api-management/cli/ratelimit/get-override.md): Look up the rate limit override for an identifier.
+- [unkey ratelimit limit](https://www.unkey.com/docs/api-management/cli/ratelimit/limit.md): Check and consume a rate limit for an identifier in a namespace.
+- [unkey ratelimit overrides list](https://www.unkey.com/docs/api-management/cli/ratelimit/list-overrides.md): List the rate limit overrides in a namespace.
+- [unkey ratelimit multi-limit](https://www.unkey.com/docs/api-management/cli/ratelimit/multi-limit.md): Check several rate limits in one request that passes only if all of them pass.
+- [unkey ratelimit overrides set](https://www.unkey.com/docs/api-management/cli/ratelimit/set-override.md): Give an identifier or pattern its own rate limit in a namespace.
+- [unkey ratelimit namespaces create](https://www.unkey.com/docs/api-management/cli/ratelimit/create-namespace.md): Create a rate limit namespace before your first rate limit request.
+- [unkey ratelimit namespaces delete](https://www.unkey.com/docs/api-management/cli/ratelimit/delete-namespace.md): Delete a rate limit namespace and all of its overrides.
+- [unkey ratelimit namespaces list](https://www.unkey.com/docs/api-management/cli/ratelimit/list-namespaces.md): List the rate limit namespaces your credentials can read.
+- [unkey ratelimit namespaces update](https://www.unkey.com/docs/api-management/cli/ratelimit/update-namespace.md): Rename a rate limit namespace without changing its overrides.
+- [unkey analytics ratelimits](https://www.unkey.com/docs/api-management/cli/analytics/get-ratelimits.md): Run a SQL query against your rate limit analytics.
+- [unkey analytics verifications](https://www.unkey.com/docs/api-management/cli/analytics/get-verifications.md): Run a SQL query against your key verification analytics.
+- [unkey portals create](https://www.unkey.com/docs/api-management/cli/portal/create-portal.md): Create a portal for one app or keyspace.
+- [unkey portals get](https://www.unkey.com/docs/api-management/cli/portal/get-portal.md): Read one portal by its handle or by the resource it serves.
+- [unkey portals update](https://www.unkey.com/docs/api-management/cli/portal/update-portal.md): Change a portal's handle, name, branding, enabled state, or the resource it serves.
+- [unkey portals delete](https://www.unkey.com/docs/api-management/cli/portal/delete-portal.md): Delete a portal and cut off the sessions it minted.
+- [unkey portals sessions create](https://www.unkey.com/docs/api-management/cli/portal/create-session.md): Create a short-lived customer portal session for an end user.
 - [Create API namespace](https://www.unkey.com/docs/api-management/api-reference/apis/create-api-namespace.md): Create an API namespace for organizing keys by environment, service, or product.
 - [Delete API namespace](https://www.unkey.com/docs/api-management/api-reference/apis/delete-api-namespace.md): Permanently delete an API namespace and immediately invalidate all associated keys.
 - [Get API namespace](https://www.unkey.com/docs/api-management/api-reference/apis/get-api-namespace.md): Retrieve basic information about an API namespace including its ID and name.
