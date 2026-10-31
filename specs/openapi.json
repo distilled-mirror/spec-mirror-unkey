@@ -14691,7 +14691,7 @@
     },
     "/v2/deployments.stopDeployment": {
       "post": {
-        "description": "Stop a running preview deployment. Stopped deployments keep their\nconfiguration and can be resumed later with `startDeployment`.\n\nThe deployment must be ready and running, and must belong to a\nnon-production environment; production deployments cannot be stopped.\nA deployment that is already draining from a previous stop is rejected\nwith a precondition error.\n\nStopping is asynchronous: this endpoint only enqueues the stop and returns\nimmediately. Poll `getDeployment` until the status reaches `stopped`.\n\n**Required Permissions**\n\nYour root key must have write permission on the deployment:\n- `unkey:v1:<workspace_id>:projects/<project_id>/apps/<app_id>/environments/<environment_id>/deployments/<deployment_id>#write`\n",
+        "description": "Stop a running deployment that is not the app's live production deployment.\nStopped deployments keep their configuration. Preview deployments can be\nresumed later with `startDeployment`.\n\nThe deployment must be ready and running. Previous production deployments\ncan be stopped, but stopping one removes instant rollback to it.\nA deployment that is already draining from a previous stop is rejected\nwith a precondition error.\n\nStopping is asynchronous: this endpoint only enqueues the stop and returns\nimmediately. Poll `getDeployment` until the status reaches `stopped`.\n\n**Required Permissions**\n\nYour root key must have write permission on the deployment:\n- `unkey:v1:<workspace_id>:projects/<project_id>/apps/<app_id>/environments/<environment_id>/deployments/<deployment_id>#write`\n",
         "operationId": "deployments.stopDeployment",
         "requestBody": {
           "content": {
@@ -14782,7 +14782,7 @@
                 }
               }
             },
-            "description": "Precondition failed - The deployment is not running, a stop is already\nin progress, or it belongs to a production environment.\n"
+            "description": "Precondition failed - The deployment is not running, a stop is already\nin progress, or it is the app's live production deployment.\n"
           },
           "429": {
             "content": {

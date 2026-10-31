@@ -9,7 +9,7 @@
 > The word environment means production or preview in Compute. Rate limiting has four meanings on this site; the glossary lists them.
 
 - [Unkey Products](https://www.unkey.com/docs/index.md): Deploy apps with Compute or add API keys to any app with API Management.
-- [The Unkey platform](https://www.unkey.com/docs/platform/index.md): Unkey hosts API Management and Compute, and you can self-host the source.
+- [The Unkey platform](https://www.unkey.com/docs/platform/index.md): Explore Unkey's main products, how they fit together, and the underlying features they share across the platform.
 - [Glossary](https://www.unkey.com/docs/platform/glossary.md): Look up the terms Unkey uses and which product each one belongs to.
 - [Workspaces](https://www.unkey.com/docs/platform/workspace/overview.md): Understand what a workspace holds and how to create or switch between them.
 - [Workspace settings](https://www.unkey.com/docs/platform/workspace/settings.md): Rename your workspace, copy its ID, and connect the GitHub App.
@@ -126,7 +126,7 @@
 - [per_key_breakout_too_large](https://www.unkey.com/docs/errors/user/bad_request/per_key_breakout_too_large.md): A portal analytics window covers more keys than the per-key breakout returns.
 - [permissions_query_syntax_error](https://www.unkey.com/docs/errors/user/bad_request/permissions_query_syntax_error.md): The permissions query passed to keys.verifyKey could not be parsed.
 - [query_range_exceeds_retention](https://www.unkey.com/docs/errors/user/bad_request/query_range_exceeds_retention.md): The analytics query asks for data older than the workspace's retention window.
-- [request_body_too_large](https://www.unkey.com/docs/errors/user/bad_request/request_body_too_large.md): The request body is larger than the 10 MiB the API accepts.
+- [request_body_too_large](https://www.unkey.com/docs/errors/user/bad_request/request_body_too_large.md): The request body is larger than the size limit.
 - [request_body_unreadable](https://www.unkey.com/docs/errors/user/bad_request/request_body_unreadable.md): The API could not read the request body to the end.
 - [request_timeout](https://www.unkey.com/docs/errors/user/bad_request/request_timeout.md): The request did not finish within the API's one minute deadline.
 - [ip_rate_limited](https://www.unkey.com/docs/errors/user/too_many_requests/ip_rate_limited.md): Your IP address is sending too many requests to an unauthenticated Unkey API endpoint.
@@ -138,6 +138,7 @@
 - [query_rows_limit_exceeded](https://www.unkey.com/docs/errors/user/unprocessable_entity/query_rows_limit_exceeded.md): The analytics query read or returned more rows than the workspace allows.
 - [deployment_offline](https://www.unkey.com/docs/errors/frontline/capacity/deployment_offline.md): The deployment behind this hostname was stopped or its project canceled.
 - [no_running_instances](https://www.unkey.com/docs/errors/frontline/capacity/no_running_instances.md): The deployment has no running instance in any region right now.
+- [openapi_validation_busy](https://www.unkey.com/docs/errors/frontline/capacity/openapi_validation_busy.md): The gateway is too busy validating requests to check this one right now.
 - [spend_limit_reached](https://www.unkey.com/docs/errors/frontline/capacity/spend_limit_reached.md): Compute is paused because the workspace reached its monthly spend budget.
 - [firewall_denied](https://www.unkey.com/docs/errors/frontline/client/firewall_denied.md): A gateway firewall policy matched the request and denied it.
 - [frontline/client/insufficient_permissions](https://www.unkey.com/docs/errors/frontline/client/insufficient_permissions.md): The API key verified but does not satisfy the gateway policy's permission query.
@@ -303,7 +304,7 @@
 - [unkey deployments promote](https://www.unkey.com/docs/compute/cli/deployments/promote-deployment.md): Make a ready production deployment the live one.
 - [unkey deployments rollback](https://www.unkey.com/docs/compute/cli/deployments/rollback-deployment.md): Send production traffic back to an earlier deployment.
 - [unkey deployments start](https://www.unkey.com/docs/compute/cli/deployments/start-deployment.md): Resume a stopped preview deployment.
-- [unkey deployments stop](https://www.unkey.com/docs/compute/cli/deployments/stop-deployment.md): Stop a running preview deployment and release its compute.
+- [unkey deployments stop](https://www.unkey.com/docs/compute/cli/deployments/stop-deployment.md): Stop a running deployment that is not live and release its compute.
 - [unkey deployments authorize](https://www.unkey.com/docs/compute/cli/deployments/authorize-deployment.md): Authorize a deployment that is waiting for approval.
 - [unkey deployments cancel](https://www.unkey.com/docs/compute/cli/deployments/cancel-deployment.md): Cancel a queued, building, or deploying deployment.
 - [unkey deployments build-logs list](https://www.unkey.com/docs/compute/cli/deployments/list-build-logs.md): Read a deployment's build output and page through its log entries.
