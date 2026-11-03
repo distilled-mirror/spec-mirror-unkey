@@ -10376,7 +10376,7 @@
             ]
           },
           "customDomainsMax": {
-            "description": "Custom domains across all apps. `current` is the custom domains attached\nnow. `limit` is `null` when the plan has no limit. Present only with a\nCompute plan.\n",
+            "description": "Custom domains across all apps. Subdomains are unlimited, so\n`api.acme.com`, `app.acme.com`, and `acme.com` together count as one\ncustom domain. `current` is the custom domains counted now. `limit` is `null` when\nthe plan has no limit. Present only with a Compute plan.\n",
             "allOf": [
               {
                 "$ref": "#/components/schemas/V2WorkspaceGetLimitsLimit"
@@ -18987,7 +18987,7 @@
     },
     "/v2/keys.createKey": {
       "post": {
-        "description": "Create a new API key for user authentication and authorization.\n\nUse this endpoint when users sign up, upgrade subscription tiers, or need additional keys. Keys are cryptographically secure and unique to the specified API namespace.\n\n**Important**: The key is returned only once. Store it immediately and provide it to your user, as it cannot be retrieved later.\n\n**Common use cases:**\n- Generate keys for new user registrations\n- Create additional keys for different applications\n- Issue keys with specific permissions or limits\n\n**Required Permissions**\n\nYour credential needs one of:\n- `api.*.create_key` (create keys in any API)\n- `api.<api_id>.create_key` (create keys in specific API)\n- `unkey:v1:<workspace_id>:keyspaces/*#create_key` (create keys in any keyspace)\n- `unkey:v1:<workspace_id>:keyspaces/<keyspace_id>#create_key` (create keys in a specific keyspace)\n",
+        "description": "Create a new API key for user authentication and authorization.\n\nUse this endpoint when users sign up, upgrade subscription tiers, or need additional keys. Keys are cryptographically secure and unique to the specified API namespace.\n\n**Important**: Store the returned key securely. Unless you create a recoverable key, the plaintext cannot be retrieved later. Recoverable keys require key encryption and permission to decrypt them.\n\n**Common use cases:**\n- Generate keys for new user registrations\n- Create additional keys for different applications\n- Issue keys with specific permissions or limits\n\n**Required Permissions**\n\nYour credential needs one of:\n- `api.*.create_key` (create keys in any API)\n- `api.<api_id>.create_key` (create keys in specific API)\n- `unkey:v1:<workspace_id>:keyspaces/*#create_key` (create keys in any keyspace)\n- `unkey:v1:<workspace_id>:keyspaces/<keyspace_id>#create_key` (create keys in a specific keyspace)\n",
         "operationId": "keys.createKey",
         "requestBody": {
           "content": {
@@ -19008,7 +19008,7 @@
                 }
               }
             },
-            "description": "Successfully created a new API key. The response includes both the keyId (for reference in your system) and the full key string. IMPORTANT: This is the only time the complete key is available - it cannot be retrieved later. You must securely provide this key to your end user immediately."
+            "description": "Successfully created a new API key. The response includes both the keyId (for reference in your system) and the full key string. Store the key securely. The plaintext cannot be retrieved later unless the key was created as recoverable. Retrieving a recoverable key requires permission to decrypt it."
           },
           "400": {
             "content": {
@@ -20027,7 +20027,7 @@
     },
     "/v2/keys.verifyKey": {
       "post": {
-        "description": "Verify an API key's validity and permissions for request authentication.\n\nUse this endpoint on every incoming request to your protected resources. It checks key validity, permissions, rate limits, and usage quotas in a single call.\n\n**Important**: Returns HTTP 200 for all verification outcomes — check the `valid` field in response data to determine if the key is authorized. A 429 may be returned if the workspace exceeds its API rate limit.\n\n**Common use cases:**\n- Authenticate API requests before processing\n- Enforce permission-based access control\n- Track usage and apply rate limits\n\n**Required Permissions**\n\nYour credential needs one of:\n- `api.*.verify_key` (verify keys in any API)\n- `api.<api_id>.verify_key` (verify keys in specific API)\n- `unkey:v1:<workspace_id>:keyspaces/*/keys/*#verify_key` (verify keys in any keyspace)\n- `unkey:v1:<workspace_id>:keyspaces/<keyspace_id>/keys/*#verify_key` (verify keys in a specific keyspace)\n- `unkey:v1:<workspace_id>:keyspaces/<keyspace_id>/keys/<key_id>#verify_key` (verify a specific key)\n\n**Note**: If your credential has no verify permissions at all, you will receive a `403 Forbidden` error. If your credential has verify permissions for a different API or keyspace than the key you're verifying, you will receive a `200` response with `code: NOT_FOUND` to avoid leaking key existence.\n",
+        "description": "Verify an API key's validity and permissions for request authentication.\n\nUse this endpoint on every incoming request to your protected resources. It checks key validity, permissions, rate limits, and usage quotas in a single call.\n\n**Important**: Returns HTTP 200 for all verification outcomes — check the `valid` field in response data to determine if the key is authorized. A 429 may be returned if the workspace exceeds its API rate limit.\n\n**Common use cases:**\n- Authenticate API requests before processing\n- Enforce permission-based access control\n- Track usage and apply rate limits\n\n**Required Permissions**\n\nYour credential needs one of:\n- `api.*.verify_key` (verify keys in any API)\n- `api.<api_id>.verify_key` (verify keys in specific API)\n- `unkey:v1:<workspace_id>:keyspaces/*/keys/*#verify_key` (verify keys in any keyspace)\n- `unkey:v1:<workspace_id>:keyspaces/<keyspace_id>/keys/*#verify_key` (verify keys in a specific keyspace)\n- `unkey:v1:<workspace_id>:keyspaces/<keyspace_id>/keys/<key_id>#verify_key` (verify a specific key)\n\n**Note**: If your credential lacks permission to verify this key, the response is HTTP 200 with `valid: false` and `code: NOT_FOUND`. This does not distinguish a missing key from an inaccessible key.\n",
         "operationId": "keys.verifyKey",
         "requestBody": {
           "content": {
@@ -20092,16 +20092,6 @@
               }
             },
             "description": "Unauthorized"
-          },
-          "403": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ForbiddenErrorResponse"
-                }
-              }
-            },
-            "description": "Forbidden. Returned when the credential has no verify permissions at all.\n"
           },
           "404": {
             "content": {
