@@ -11,11 +11,9 @@
 - [Unkey Products](https://www.unkey.com/docs/index.md): Deploy apps with Compute or add API keys to any app with API Management.
 - [The Unkey platform](https://www.unkey.com/docs/platform/index.md): Explore Unkey's main products, how they fit together, and the underlying features they share across the platform.
 - [Glossary](https://www.unkey.com/docs/platform/glossary.md): Look up the terms Unkey uses and which product each one belongs to.
-- [Workspaces](https://www.unkey.com/docs/platform/workspace/overview.md): Understand what a workspace holds and how to create or switch between them.
-- [Workspace settings](https://www.unkey.com/docs/platform/workspace/settings.md): Rename your workspace, copy its ID, and connect the GitHub App.
+- [Workspaces](https://www.unkey.com/docs/platform/workspace/overview.md): What a workspace holds, how to create one, and the settings on Settings > General.
+- [Team](https://www.unkey.com/docs/platform/workspace/team.md): Invite people, choose admin or developer roles, and secure your own account with two-factor authentication.
 - [Log drains](https://www.unkey.com/docs/platform/workspace/log-drains.md): Forward audit logs, verifications, gateway traffic, runtime logs, or rate limits to HTTP or Axiom.
-- [Team](https://www.unkey.com/docs/platform/workspace/team.md): Invite people to your workspace and choose whether each one is an admin or a developer.
-- [Two-factor authentication](https://www.unkey.com/docs/platform/workspace/two-factor-auth.md): Add a second factor to your Unkey sign-in from Account settings.
 - [Audit logs](https://www.unkey.com/docs/platform/workspace/audit-logs/overview.md): Who changed what in your workspace, and how long the record is kept.
 - [Audit log event types](https://www.unkey.com/docs/platform/workspace/audit-logs/event-types.md): Every event the audit log records and what triggers it.
 - [Unkey plans and free tier](https://www.unkey.com/docs/platform/billing/plans.md): Free API Management has 150,000 valid requests a month, and Compute Starter is $5 a month after a free first month.
