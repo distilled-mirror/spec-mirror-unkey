@@ -138,6 +138,7 @@
 - [no_running_instances](https://www.unkey.com/docs/errors/frontline/capacity/no_running_instances.md): The deployment has no running instance in any region right now.
 - [openapi_validation_busy](https://www.unkey.com/docs/errors/frontline/capacity/openapi_validation_busy.md): The gateway is too busy validating requests to check this one right now.
 - [spend_limit_reached](https://www.unkey.com/docs/errors/frontline/capacity/spend_limit_reached.md): Compute is paused because the workspace reached its monthly spend budget.
+- [ambiguous_path](https://www.unkey.com/docs/errors/frontline/client/ambiguous_path.md): The request path contains an encoded slash, backslash, or dot segment, so the gateway rejected it.
 - [firewall_denied](https://www.unkey.com/docs/errors/frontline/client/firewall_denied.md): A gateway firewall policy matched the request and denied it.
 - [frontline/client/insufficient_permissions](https://www.unkey.com/docs/errors/frontline/client/insufficient_permissions.md): The API key verified but does not satisfy the gateway policy's permission query.
 - [invalid_key](https://www.unkey.com/docs/errors/frontline/client/invalid_key.md): The API key in the request did not verify.
